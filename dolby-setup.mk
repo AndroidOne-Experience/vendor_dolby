@@ -32,3 +32,21 @@ PRODUCT_VENDOR_PROPERTIES += \
 # DAX config
 PRODUCT_COPY_FILES += \
     $(DOLBY_PATH)/soundfx/dax-default.xml:$(TARGET_COPY_OUT_VENDOR)/etc/dolby/dax-default.xml
+
+# daxService (Lenovo)
+PRODUCT_COPY_FILES += \
+    $(DOLBY_PATH)/soundfx/system_ext/etc/permissions/privapp-com.dolby.daxservice.xml:$(TARGET_COPY_OUT_SYSTEM_EXT)/etc/permissions/com.dolby.daxservice.xml \
+    $(DOLBY_PATH)/soundfx/system_ext/etc/sysconfig/config-com.dolby.daxservice.xml:$(TARGET_COPY_OUT_SYSTEM_EXT)/etc/sysconfig/config-com.dolby.daxservice.xml \
+    $(DOLBY_PATH)/soundfx/system_ext/etc/sysconfig/hiddenapi-com.dolby.daxservice.xml:$(TARGET_COPY_OUT_SYSTEM_EXT)/etc/sysconfig/hiddenapi-whitelist-com.dolby.daxservice.xml
+
+PRODUCT_PACKAGES += \
+    daxService
+
+# DAXUI (Lenovo)
+PRODUCT_COPY_FILES += \
+    $(DOLBY_PATH)/soundfx/system_ext/etc/permissions/privapp-com.dolby.daxappui.xml:$(TARGET_COPY_OUT_SYSTEM_EXT)/etc/permissions/privapp-com.dolby.daxappui.xml \
+    $(DOLBY_PATH)/soundfx/system_ext/etc/sysconfig/config-com.dolby.daxappui.xml:$(TARGET_COPY_OUT_SYSTEM_EXT)/etc/sysconfig/config-com.dolby.daxappui.xml
+
+PRODUCT_PACKAGES += \
+	DaxUI
+

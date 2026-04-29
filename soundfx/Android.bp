@@ -1,0 +1,24 @@
+android_app_import {
+    name: "daxService",
+    owner: "Lenovo",
+    apk: "system_ext/priv-app/daxService/daxService.apk",
+    certificate: "platform",
+    dex_preopt: {
+        enabled: false,
+    },
+    privileged: true,
+    system_ext_specific: true,
+}
+
+android_app_import {
+    name: "DaxUI",
+    owner: "Lenovo",
+    apk: "system_ext/priv-app/DaxUI/DaxUI.apk",
+    certificate: "platform",
+    overrides: ["MusicFX"],
+    dex_preopt: {
+        enabled: false,
+    },
+    privileged: true,
+    system_ext_specific: true,
+}
