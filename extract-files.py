@@ -39,7 +39,16 @@ lib_fixups: lib_fixups_user_type = {
 }
 
 blob_fixups: blob_fixups_user_type = {
-
+    ('vendor/bin/hw/vendor.dolby.hardware.dms@2.0-service',
+     'vendor/lib/soundfx/libdlbvol.so','vendor/lib64/soundfx/libdlbvol.so',
+     'vendor/lib/soundfx/libswdap.so', 'vendor/lib64/soundfx/libswdap.so',
+     'vendor/lib/soundfx/libswgamedap.so', 'vendor/lib64/soundfx/libswgamedap.so',
+     'vendor/lib/soundfx/libswvqe.so', 'vendor/lib64/soundfx/libswvqe.so',
+     'vendor/lib64/vendor.dolby.hardware.dms@2.0-impl.so',
+     'vendor/lib64/libdlbdsservice-sony.so',): blob_fixup()
+        .replace_needed('vendor.dolby.hardware.dms@2.0.so', 'vendor.dolby.hardware.dms@2.0-sony.so')
+        .replace_needed('libdapparamstorage.so', 'libdapparamstorage-sony.so')
+        .replace_needed('libdlbdsservice.so', 'libdlbdsservice-sony.so'),
 }  # fmt: skip
 
 module = ExtractUtilsModule(

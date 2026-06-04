@@ -13,3 +13,12 @@ prebuilt_etc_xml {
     sub_dir: "vintf/manifest",
     soc_specific: true,
 }
+
+prebuilt_etc_xml {
+    name: "vendor.dolby.hardware.dms.xml",
+    owner: "dolby",
+    src: "vendor.dolby.hardware.dms.xml",
+    filename_from_src: true,
+    sub_dir: "vintf/manifest",
+    soc_specific: true,
+}
