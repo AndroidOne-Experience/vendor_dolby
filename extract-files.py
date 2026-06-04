@@ -49,6 +49,10 @@ blob_fixups: blob_fixups_user_type = {
         .replace_needed('vendor.dolby.hardware.dms@2.0.so', 'vendor.dolby.hardware.dms@2.0-sony.so')
         .replace_needed('libdapparamstorage.so', 'libdapparamstorage-sony.so')
         .replace_needed('libdlbdsservice.so', 'libdlbdsservice-sony.so'),
+    ('vendor/lib/soundfx/libdlbvol.so','vendor/lib64/soundfx/libdlbvol.so',
+     'vendor/lib/libdlbpreg.so', 'vendor/lib64/libdlbpreg.so',
+     'vendor/lib64/libdlbdsservice-sony.so'): blob_fixup()
+        .replace_needed('libstagefright_foundation.so', 'libstagefright_foundation-v33.so'),
 }  # fmt: skip
 
 module = ExtractUtilsModule(
