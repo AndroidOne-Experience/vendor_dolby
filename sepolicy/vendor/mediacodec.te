@@ -1,0 +1,5 @@
+# HIDL DMS
+hal_client_domain(mediacodec, hal_dms)
+
+# AIDL DMS
+typeattribute mediacodec hal_aidl_dms_client;
