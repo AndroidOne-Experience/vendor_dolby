@@ -1,0 +1,23 @@
+# Imported from: motorola/rtwo_g/msi:16/W1TR36M-W1-ST34/6262a5:user/release-keys
+
+# Dolby_Codec2
+vendor/bin/hw/vendor.dolby.dms.service|be1effbf063c0f341b8f0f3c54aae1b9190c86ad
+vendor/bin/hw/vendor.dolby.media.c2@1.0-service|09964ad8720842e9b68340e0ec707662805996d3
+vendor/etc/init/dms-service.rc|96d33e6009de44b032f7bee69d37a9ec4e405c5a
+vendor/etc/init/vendor.dolby.media.c2@1.0-service.rc|bc1e134139c7dd0e5b4f98952aa51c629ea66dc7
+vendor/etc/media_codecs_dolby_audio.xml|02e09216199cafbe5e0b935a344b51dfb7ab8e37
+vendor/lib/libdapparamstorage.so|8c98227162a81270cde7fe33052cc4d7fbf7f1c9
+vendor/lib/libdmshal.so|5f91d24d286775ba361146410997c1a9dd8778e8
+vendor/lib/vendor.dolby.dms-V1-ndk.so|026eb703270774302e3c780309167f5b32d4663e
+vendor/lib/vendor.dolby.hardware.dms@2.0.so|6249622c674d026761a6480c76e98287bc3677d0
+vendor/lib/vendor.dolby.hardware.dms@2.1.so|dde02e2095aff3707edb543e30c8fcc0b16a546b
+vendor/lib64/libcodec2_soft_ac4dec.so|0ca379289882182977aabad61eb47732bf9643c8
+vendor/lib64/libcodec2_soft_ddpdec.so|14f071ca8a14f76a6c87bc60a15cab96dc5df947
+vendor/lib64/libcodec2_store_dolby.so|37e945a388fee09afbdf35c63b694e955d4ecc11
+vendor/lib64/libdapparamstorage.so|71f8b8b10d4a2d046147d02474ccb68dfc1a12ef
+vendor/lib64/libdeccfg.so|d64e4333ac2d5709910f8e66139f2e3b998611db
+vendor/lib64/libdlbdsservice.so|41a4528c98dc70a222a9ef05b530f818b3fb80d4
+vendor/lib64/libdmshal.so|3d3af5891e48d99c532b0886ff522c2c627b024d
+vendor/lib64/vendor.dolby.dms-V1-ndk.so|5eb5c2601177ca4862538e112d65685d151586be
+vendor/lib64/vendor.dolby.hardware.dms@2.0.so|c7d4802611488ff8cba471e190a3b07d49fadaef
+vendor/lib64/vendor.dolby.hardware.dms@2.1.so|f2d2a60943bb0e210128d7046552b271aacc31e1
