@@ -1,0 +1,13 @@
+# HIDL DMS
+hal_client_domain(platform_app, hal_dms)
+
+# AIDL DMS
+typeattribute platform_app hal_aidl_dms_client;
+
+# Motorola settings service
+type mot_system_service, service_manager_type;
+allow platform_app mot_system_service:service_manager { add find };
+
+# Audio properties
+get_prop(platform_app, audio_config_prop)
+set_prop(platform_app, audio_prop)

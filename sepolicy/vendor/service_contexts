@@ -1,0 +1,5 @@
+# Motorola settings service
+motsettings                         u:object_r:mot_system_service:s0
+
+# AIDL Dolby DMS HAL service
+vendor.dolby.dms.IDms/default       u:object_r:hal_aidl_dms_service:s0

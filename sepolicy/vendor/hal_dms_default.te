@@ -1,0 +1,14 @@
+type hal_dms_default, domain;
+type hal_dms_default_exec, exec_type, vendor_file_type, file_type;
+
+# Use the HIDL attribute system
+hal_server_domain(hal_dms_default, hal_dms)
+init_daemon_domain(hal_dms_default)
+
+# Shared Dolby data storage
+allow hal_dms_default vendor_dolby_file:dir create_dir_perms;
+allow hal_dms_default vendor_dolby_file:file create_file_perms;
+
+# Specific IPC requirements
+binder_call(hal_dms_default, hal_audio_default)
+binder_call(hal_dms_default, platform_app)

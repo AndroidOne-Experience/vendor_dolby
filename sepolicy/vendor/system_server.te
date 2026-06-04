@@ -1,0 +1,8 @@
+# HIDL DMS
+hal_client_domain(system_server, hal_dms)
+
+# AIDL DMS
+typeattribute system_server hal_aidl_dms_client;
+
+# Motorola settings
+allow system_server mot_system_service:service_manager { add find };

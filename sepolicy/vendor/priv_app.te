@@ -1,0 +1,8 @@
+# HIDL DMS
+hal_client_domain(priv_app, hal_dms)
+
+# AIDL DMS
+typeattribute priv_app hal_aidl_dms_client;
+
+# Motorola settings service
+allow priv_app mot_system_service:service_manager find;
