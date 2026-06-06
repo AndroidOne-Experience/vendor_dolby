@@ -786,6 +786,88 @@ cc_prebuilt_library_shared {
     soc_specific: true,
 }
 
+android_app_import {
+    name: "MotoSignature2App",
+    owner: "dolby",
+    apk: "proprietary/system/app/MotoSignature2App/MotoSignature2App.apk",
+    preprocessed: true,
+    presigned: true,
+    dex_preopt: {
+        enabled: false,
+    },
+}
+
+android_app_import {
+    name: "MotoSignatureApp",
+    owner: "dolby",
+    apk: "proprietary/system/app/MotoSignatureApp/MotoSignatureApp.apk",
+    preprocessed: true,
+    presigned: true,
+    dex_preopt: {
+        enabled: false,
+    },
+}
+
+android_app_import {
+    name: "MotorolaSettingsProvider",
+    owner: "dolby",
+    apk: "proprietary/system_ext/priv-app/MotorolaSettingsProvider/MotorolaSettingsProvider.apk",
+    certificate: "platform",
+    dex_preopt: {
+        enabled: false,
+    },
+    privileged: true,
+    system_ext_specific: true,
+}
+
+dex_import {
+    name: "com.motorola.frameworks.core.addon",
+    owner: "dolby",
+    jars: [
+        "proprietary/system/framework/com.motorola.frameworks.core.addon.jar",
+    ],
+}
+
+dex_import {
+    name: "com.motorola.motosignature",
+    owner: "dolby",
+    jars: [
+        "proprietary/system/framework/com.motorola.motosignature.jar",
+    ],
+}
+
+dex_import {
+    name: "moto-checkin",
+    owner: "dolby",
+    jars: [
+        "proprietary/system/framework/moto-checkin.jar",
+    ],
+}
+
+dex_import {
+    name: "moto-core_services",
+    owner: "dolby",
+    jars: [
+        "proprietary/system/framework/moto-core_services.jar",
+    ],
+}
+
+dex_import {
+    name: "moto-settings",
+    owner: "dolby",
+    jars: [
+        "proprietary/system/framework/moto-settings.jar",
+    ],
+}
+
+dex_import {
+    name: "motoaudioeffectsdk",
+    owner: "dolby",
+    jars: [
+        "proprietary/system/framework/motoaudioeffectsdk.jar",
+    ],
+}
+
 cc_prebuilt_binary {
     name: "vendor.dolby.dms.service",
     owner: "dolby",

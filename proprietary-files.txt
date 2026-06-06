@@ -43,3 +43,22 @@ vendor/lib64/soundfx/libswgamedap.so|6be673e25f25f8f2013b5785725016802e8eced8|b3
 vendor/lib64/soundfx/libswvqe.so|23f22eb9ae81e1f8789a81808794a0c2fdc88137|d340b7d1b1dc89e5e383a7027625f995ee1d12ba
 vendor/lib64/vendor.dolby.hardware.dms@2.0-impl.so|59ba0b46c622f28e34f49a334c4cfe6d4bc34be6|aefc2a8d43ddea4fdee44be0e2a3da5e38eba21f
 vendor/lib64/vendor.dolby.hardware.dms@2.0.so:vendor/lib64/vendor.dolby.hardware.dms@2.0-sony.so;FIX_SONAME|1c6b82e7da2d3e6ba712f9c9e7f96178280361de|b87f8981c85ef97201e7ebdadfe4b9cc7ad631d4
+
+# Imported from: motorola/rtwo_g/msi:16/W1TR36M-W1-ST34/6262a5:user/release-keys
+
+# motorola_framework
+system/app/MotoSignature2App/MotoSignature2App.apk;PRESIGNED|2f5c2a1bb3b45abfcd4d087224ccaf1eabfced23
+system/app/MotoSignatureApp/MotoSignatureApp.apk;PRESIGNED|78b67d403ec6196e60e824a3a09a68090b75b6d3
+system/etc/permissions/com.motorola.frameworks.core.addon.xml|3940e9a53d6adf12cb2e567c5f07cc3eafc3c4cd
+system/etc/permissions/com.motorola.motosignature.xml|657458b1f279e2158db87925dcd518d48f9afcf7
+system/etc/permissions/moto-checkin.xml|16aa04aca5c6071cab7c70beadbf61ff504aa0d3
+system/etc/permissions/moto-core_services.xml|089d5414076312bff1bbb001ef134c87f68bf65d
+system/etc/permissions/moto-settings.xml|669390629c7ede2001e0d4d780e2ea86c94da5bb
+system/etc/permissions/motoaudioeffectsdk.xml|70b46b398e1711da491f39cc9223819e0285035e
+system/framework/com.motorola.frameworks.core.addon.jar|0276b2de96f33fc401b519b94e98f0cdcd89da42
+system/framework/com.motorola.motosignature.jar|7b6bbcfbe183b4945fb76e153a7f5c8e29817dc4
+system/framework/moto-checkin.jar|d96425cd1bd784c56e3a2acddbf59de734cc3610
+system/framework/moto-core_services.jar|72b403643e08ac50b8cabc34dbf92ee15bd5d8cb
+system/framework/moto-settings.jar|98f11d796b435ea065346b4df38d62c2b15be95b
+system/framework/motoaudioeffectsdk.jar|d8a34048be52ed484bc322dc3f06ec7a96885b38
+system_ext/priv-app/MotorolaSettingsProvider/MotorolaSettingsProvider.apk|a5f1588feed46a9a8b8132df89dbe73947c35b6d
