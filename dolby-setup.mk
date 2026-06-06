@@ -27,8 +27,22 @@ $(call inherit-product, $(DOLBY_PATH)/prebuilts/prebuilts-vendor.mk)
 # Dolby props
 PRODUCT_VENDOR_PROPERTIES += \
     ro.vendor.dolby.dax.version=DAX3_3.11.0.10_r2 \
-	persist.vendor.audio_fx.current=dolby
+    persist.vendor.audio_fx.current=dolby \
+    ro.vendor.dolby.no_custom_profile=true \
+    ro.audio.useNewDeviceInventory=true \
+    persist.vendor.audio.dolby.tws_tuning=true
 
 # DAX config
 PRODUCT_COPY_FILES += \
     $(DOLBY_PATH)/soundfx/dax-default.xml:$(TARGET_COPY_OUT_VENDOR)/etc/dolby/dax-default.xml
+
+# Motorola Dolby tuner
+PRODUCT_COPY_FILES += \
+    soundfx/motorola/product/etc/default-permissions/default-permissions-com.motorola.dolby.dolbyui.xml:$(TARGET_COPY_OUT_PRODUCT)/etc/default-permissions/default-permissions-com.motorola.dolby.dolbyui.xml \
+    soundfx/motorola/system/etc/permissions/com.motorola.dolby.dolbyui.dax3.features.xml:$(TARGET_COPY_OUT_SYSTEM)/etc/permissions/com.motorola.dolby.dolbyui.dax3.features.xml \
+    soundfx/motorola/system/etc/sysconfig/hiddenapi-whitelist-com.motorola.dolby.dolbyui.xml:$(TARGET_COPY_OUT_SYSTEM)/etc/sysconfig/hiddenapi-whitelist-com.motorola.dolby.dolbyui.xml \
+    soundfx/motorola/system_ext/etc/permissions/com.dolby.daxservice.xml:$(TARGET_COPY_OUT_SYSTEM_EXT)/etc/permissions/com.dolby.daxservice.xml
+
+PRODUCT_PACKAGES += \
+    MotoDolbyDax3 \
+    daxService-motorola
