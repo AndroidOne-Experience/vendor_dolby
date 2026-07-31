@@ -2,4 +2,5 @@
 
 <MediaCodecs>
     <Include href="media_codecs_dolby_audio.xml" />
+    <Include href="media_codecs_dolby_vision.xml" />
 </MediaCodecs>

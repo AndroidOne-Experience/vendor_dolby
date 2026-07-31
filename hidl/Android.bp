@@ -22,3 +22,19 @@ prebuilt_etc_xml {
     sub_dir: "vintf/manifest",
     soc_specific: true,
 }
+
+prebuilt_etc_xml {
+    name: "vendor.dolby.media.dvs-service.xml",
+    src: "vendor.dolby.media.dvs-service.xml",
+    filename_from_src: true,
+    sub_dir: "vintf/manifest",
+    soc_specific: true,
+}
+
+prebuilt_etc_xml {
+    name: "vendor.dovi.media.c2@1.0-service.xml",
+    src: "vendor.dovi.media.c2@1.0-service.xml",
+    filename_from_src: true,
+    sub_dir: "vintf/manifest",
+    soc_specific: true,
+}

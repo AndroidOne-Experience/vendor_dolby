@@ -43,3 +43,21 @@ vendor/lib64/soundfx/libswgamedap.so|6be673e25f25f8f2013b5785725016802e8eced8|b3
 vendor/lib64/soundfx/libswvqe.so|23f22eb9ae81e1f8789a81808794a0c2fdc88137|d340b7d1b1dc89e5e383a7027625f995ee1d12ba
 vendor/lib64/vendor.dolby.hardware.dms@2.0-impl.so|59ba0b46c622f28e34f49a334c4cfe6d4bc34be6|aefc2a8d43ddea4fdee44be0e2a3da5e38eba21f
 vendor/lib64/vendor.dolby.hardware.dms@2.0.so:vendor/lib64/vendor.dolby.hardware.dms@2.0-sony.so;FIX_SONAME|1c6b82e7da2d3e6ba712f9c9e7f96178280361de|b87f8981c85ef97201e7ebdadfe4b9cc7ad631d4
+
+# Vision
+vendor/bin/hw/dolbycodec2
+vendor/bin/hw/dvs-hal-service
+vendor/etc/dolby_vision.cfg
+vendor/etc/init/vendor.dolby.media.dvs-service-vision.rc
+vendor/etc/init/vendor.dolbyvision.media.c2@1.0-service.rc
+vendor/lib64/c2.dolby.avc.dec.so
+vendor/lib64/c2.dolby.avc.sec.dec.so
+vendor/lib64/c2.dolby.client.so
+vendor/lib64/c2.dolby.egl.so
+vendor/lib64/c2.dolby.hevc.dec.so
+vendor/lib64/c2.dolby.hevc.enc.so
+vendor/lib64/c2.dolby.hevc.sec.dec.so
+vendor/lib64/c2.dolby.store.so
+vendor/lib64/libdolbyottcameracontrol.so
+vendor/lib64/libdolbyvision.so
+vendor/lib64/vendor.dolby.dvs@1.0.so

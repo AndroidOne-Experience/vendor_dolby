@@ -50,3 +50,20 @@ PRODUCT_COPY_FILES += \
 PRODUCT_PACKAGES += \
 	DaxUI
 
+# Dolby Vision
+ifeq ($(TARGET_SUPPORTS_DOVI),true)
+# SEPolicy
+BOARD_VENDOR_SEPOLICY_DIRS += \
+    $(DOLBY_PATH)/sepolicy/vendor/vision
+# HIDL
+PRODUCT_PACKAGES += \
+    vendor.dovi.media.c2@1.0-service.xml \
+    vendor.dolby.media.dvs-service.xml
+# Dolby Vision media codecs
+PRODUCT_COPY_FILES += \
+    $(DOLBY_PATH)/media/media_codecs_dolby_vision.xml:$(TARGET_COPY_OUT_VENDOR)/etc/media_codecs_dolby_vision.xml
+# Supress spam logs
+PRODUCT_VENDOR_PROPERTIES +=  \
+    persist.log.tag.qdgralloc=S \
+    persist.log.tag.DisplayManagementConfig=S
+endif
