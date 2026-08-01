@@ -1,14 +1,9 @@
 <div align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="assets/DLB_Atms_UI_rgb_wht_@2x.png">
-    <source media="(prefers-color-scheme: light)" srcset="assets/DLB_Atms_UI_rgb_blk_@2x.png">
-    <img alt="Dolby Atmos" src="assets/DLB_Atms_UI_rgb_blk_@2x.png" width="260">
+    <source media="(prefers-color-scheme: dark)" srcset="assets/dolby.png">
+    <source media="(prefers-color-scheme: light)" srcset="assets/dolby.png">
+    <img alt="Dolby Atmos" src="assets/dolby.png" width="950">
   </picture>
-
-  <br>
-  <br>
-  
-  Bring Dolby EQ & Dolby Audio codec support to your Android build.
 </div>
 
 ---
@@ -18,7 +13,7 @@
 Clone the Dolby vendor repository into your source tree:
 
 ```bash
-git clone https://github.com/AndroidOne-Experience/vendor_dolby.git vendor/dolby --depth=1 -b v1.1
+git clone https://github.com/AndroidOne-Experience/vendor_dolby.git vendor/dolby --depth=1 -b v1.2
 ```
 
 ---
@@ -29,6 +24,16 @@ Inherit Dolby Atmos in your device configuration:
 
 ```makefile
 $(call inherit-product, vendor/dolby/dolby-setup.mk)
+```
+
+---
+
+## Media Codec Configuration
+
+Include the Dolby media codec definitions in one of the following files: `media_codecs.xml`,&nbsp;`media_codecs_c2.xml`,&nbsp;or&nbsp;`media_codecs_vendor.xml`
+
+```xml
+<Include href="media_codecs_dolby.xml" />
 ```
 
 ---
@@ -66,6 +71,18 @@ Add the following entries to your `audio_effects.xml`.
 <!-- DOLBY VQE -->
 <effect name="vqe" library="vqe" uuid="64a0f614-7fa4-48b8-b081-d59dc954616f"/>
 <!-- DOLBY END -->
+```
+
+---
+
+## Dolby Vision Support
+
+This repository also includes support for **Dolby Vision (DoVi)**.
+
+To enable Dolby Vision support, add the following flag to your device configuration:
+
+```makefile
+TARGET_SUPPORTS_DOVI := true
 ```
 
 ---

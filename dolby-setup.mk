@@ -18,7 +18,7 @@ endif
 
 ifeq ($(TARGET_SUPPORTS_DOLBY_CODECS),true)
 PRODUCT_COPY_FILES += \
-    $(DOLBY_PATH)/media/media_codecs_vendor.xml:$(TARGET_COPY_OUT_VENDOR)/etc/media_codecs.xml
+    $(DOLBY_PATH)/media/media_codecs_dolby_audio.xml:$(TARGET_COPY_OUT_VENDOR)/etc/media_codecs_dolby_audio.xml
 endif
 
 # Inherit proprietary targets
@@ -70,3 +70,7 @@ PRODUCT_VENDOR_PROPERTIES +=  \
     persist.log.tag.qdgralloc=S \
     persist.log.tag.DisplayManagementConfig=S
 endif
+
+# Media codecs (Includes Dolby Audio & Vision codecs)
+PRODUCT_COPY_FILES += \
+    $(DOLBY_PATH)/media/media_codecs_vendor.xml:$(TARGET_COPY_OUT_VENDOR)/etc/media_codecs_dolby.xml

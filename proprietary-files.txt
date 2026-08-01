@@ -5,7 +5,6 @@ vendor/bin/hw/vendor.dolby.dms.service|be1effbf063c0f341b8f0f3c54aae1b9190c86ad
 vendor/bin/hw/vendor.dolby.media.c2@1.0-service|09964ad8720842e9b68340e0ec707662805996d3
 vendor/etc/init/dms-service.rc|96d33e6009de44b032f7bee69d37a9ec4e405c5a
 vendor/etc/init/vendor.dolby.media.c2@1.0-service.rc|bc1e134139c7dd0e5b4f98952aa51c629ea66dc7
-vendor/etc/media_codecs_dolby_audio.xml|02e09216199cafbe5e0b935a344b51dfb7ab8e37
 vendor/lib/libdapparamstorage.so|8c98227162a81270cde7fe33052cc4d7fbf7f1c9
 vendor/lib/libdmshal.so|5f91d24d286775ba361146410997c1a9dd8778e8
 vendor/lib/vendor.dolby.dms-V1-ndk.so|026eb703270774302e3c780309167f5b32d4663e
