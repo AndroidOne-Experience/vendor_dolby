@@ -59,6 +59,9 @@ BOARD_VENDOR_SEPOLICY_DIRS += \
 PRODUCT_PACKAGES += \
     vendor.dovi.media.c2@1.0-service.xml \
     vendor.dolby.media.dvs-service.xml
+# Override supported HDR types to include Dolby Vision
+PRODUCT_PACKAGES += \
+    DoviParts
 # Dolby Vision media codecs
 PRODUCT_COPY_FILES += \
     $(DOLBY_PATH)/media/media_codecs_dolby_vision.xml:$(TARGET_COPY_OUT_VENDOR)/etc/media_codecs_dolby_vision.xml
