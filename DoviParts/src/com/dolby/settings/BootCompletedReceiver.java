@@ -14,22 +14,62 @@ import android.util.Log;
 import android.view.Display;
 import android.view.Display.HdrCapabilities;
 
+import java.util.Arrays;
+
 public class BootCompletedReceiver extends BroadcastReceiver {
     private static final String TAG = "DoviParts";
     private static final boolean DEBUG = true;
 
     @Override
     public void onReceive(final Context context, Intent intent) {
-        if (!intent.getAction().equals(Intent.ACTION_BOOT_COMPLETED)) {
+        if (!Intent.ACTION_BOOT_COMPLETED.equals(intent.getAction())) {
             return;
         }
-        if (DEBUG)
+
+        if (DEBUG) {
             Log.d(TAG, "Received boot completed intent");
+        }
+
+        final DisplayManager displayManager = context.getSystemService(DisplayManager.class);
+        if (displayManager == null) {
+            Log.e(TAG, "DisplayManager is null");
+            return;
+        }
+
+        final Display display = displayManager.getDisplay(Display.DEFAULT_DISPLAY);
+        if (display == null) {
+            Log.e(TAG, "Default display is null");
+            return;
+        }
+
+        final int[] supportedHdrTypes =
+                display.getHdrCapabilities().getSupportedHdrTypes();
+
+        boolean hasDolbyVision = false;
+        for (int type : supportedHdrTypes) {
+            if (type == HdrCapabilities.HDR_TYPE_DOLBY_VISION) {
+                hasDolbyVision = true;
+                break;
+            }
+        }
+
+        if (hasDolbyVision) {
+            if (DEBUG) {
+                Log.d(TAG, "Dolby Vision already present, skipping override");
+            }
+            return;
+        }
+
+        int[] overrideHdrTypes =
+                Arrays.copyOf(supportedHdrTypes, supportedHdrTypes.length + 1);
+        overrideHdrTypes[supportedHdrTypes.length] =
+                HdrCapabilities.HDR_TYPE_DOLBY_VISION;
 
         // Override HDR types to enable Dolby Vision
-        final DisplayManager displayManager = context.getSystemService(DisplayManager.class);
-        displayManager.overrideHdrTypes(Display.DEFAULT_DISPLAY,
-                new int[] {HdrCapabilities.HDR_TYPE_DOLBY_VISION, HdrCapabilities.HDR_TYPE_HDR10,
-                        HdrCapabilities.HDR_TYPE_HLG, HdrCapabilities.HDR_TYPE_HDR10_PLUS});
+        displayManager.overrideHdrTypes(Display.DEFAULT_DISPLAY, overrideHdrTypes);
+
+        if (DEBUG) {
+            Log.d(TAG, "HDR types overridden: " + Arrays.toString(overrideHdrTypes));
+        }
     }
 }
