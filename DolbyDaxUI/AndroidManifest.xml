@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools" package="com.dolby.daxappui" android:versionCode="29" android:versionName="DAX3_3.5.5.12_r1">
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-permission android:name="com.dolby.permission.DOLBY_UPDATE_BROADCAST" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <!-- Platform-signed system app; these permissions enable the single-user backend. -->
+    <uses-permission android:name="android.permission.INTERACT_ACROSS_USERS" tools:ignore="ProtectedPermissions" />
+    <uses-permission android:name="android.permission.INTERACT_ACROSS_USERS_FULL" tools:ignore="ProtectedPermissions" />
+    <permission android:name="com.dolby.permission.DOLBY_UPDATE_BROADCAST" android:protectionLevel="signature" />
+    <application android:persistent="true" android:directBootAware="true" android:usesNonSdkApi="true" android:allowBackup="true" android:appComponentFactory="android.support.v4.app.CoreComponentFactory" android:icon="@mipmap/ic_launcher" android:roundIcon="@mipmap/ic_launcher_round" android:label="@string/app_name" android:name=".DAXApplication" android:resizeableActivity="true" android:supportsRtl="true" android:theme="@style/AppTheme">
+        <activity android:directBootAware="false" android:configChanges="density|fontScale|keyboardHidden|layoutDirection|navigation|orientation|screenLayout|screenSize" android:label="@string/app_name" android:name=".MainActivity" android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="com.dolby.LAUNCH_DS_APP" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <action android:name="android.service.quicksettings.action.QS_TILE_PREFERENCES" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.media.action.DISPLAY_AUDIO_EFFECT_CONTROL_PANEL" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.media.action.OPEN_AUDIO_EFFECT_CONTROL_SESSION" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity-alias android:name=".MainActivityLauncherAlias" android:targetActivity=".MainActivity" android:label="@string/launcher_app_name" android:icon="@mipmap/ic_launcher" android:roundIcon="@mipmap/ic_launcher_round" android:enabled="true" android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+        <activity android:directBootAware="false" android:allowTaskReparenting="true" android:clearTaskOnLaunch="true" android:exported="true" android:launchMode="singleTask" android:name=".soundsettings.DaxSoundSettingsEntryPoint">
+            <intent-filter>
+                <action android:name="com.android.settings.action.EXTRA_SETTINGS" />
+            </intent-filter>
+            <meta-data android:name="com.android.settings.category" android:value="com.android.settings.category.ia.sound" />
+            <meta-data android:name="com.android.settings.title" android:resource="@string/app_name" />
+            <meta-data android:name="com.android.settings.keyhint" android:value="dolby_atmos" />
+            <meta-data android:name="com.android.settings.group_key" android:value="audio_category"/>
+            <meta-data android:name="com.android.settings.summary_uri" android:value="content://com.dolby.daxappui.settings/getDynamicSummary/dolby_atmos" />
+            <meta-data android:name="com.android.settings.switch_uri" android:value="content://com.dolby.daxappui.settings" />
+            <meta-data android:name="com.android.settings.order" android:value="-108" />
+        </activity>
+        <service android:directBootAware="false" android:icon="@drawable/ic_qs_dolby_on" android:label="@string/app_name" android:name=".DaxTileService" android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE" />
+            </intent-filter>
+        </service>
+        <service
+            android:name="com.dolby.daxservice.DaxService"
+            android:process=":daxservice"
+            android:directBootAware="true"
+            android:singleUser="true"
+            android:exported="true"
+            android:permission="com.dolby.permission.DOLBY_UPDATE_BROADCAST">
+            <intent-filter>
+                <action android:name="com.dolby.daxuser.DaxService" />
+            </intent-filter>
+        </service>
+        <receiver android:name="com.dolby.daxservice.DaxServiceStarter"
+            android:directBootAware="true" android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.LOCKED_BOOT_COMPLETED" />
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+            </intent-filter>
+        </receiver>
+        <provider android:name=".soundsettings.DaxSettingsProvider"
+            android:authorities="com.dolby.daxappui.settings"
+            android:exported="true"
+            android:permission="android.permission.WRITE_SECURE_SETTINGS"/>
+    </application>
+</manifest>

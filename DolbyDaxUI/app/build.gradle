@@ -1,0 +1,88 @@
+import java.security.KeyFactory
+import java.security.KeyStore
+import java.security.cert.Certificate
+import java.security.cert.CertificateFactory
+import java.security.spec.PKCS8EncodedKeySpec
+
+plugins { id 'com.android.application' }
+
+def generatePlatformKeystore = {
+    def pk8File = file("${rootDir}/platform.pk8")
+    def certFile = file("${rootDir}/platform.x509.pem")
+    def keystoreFile = file("${rootDir}/platform.p12")
+    if (!keystoreFile.exists() && pk8File.exists() && certFile.exists()) {
+        try {
+            def keyBytes = pk8File.readBytes()
+            def spec = new PKCS8EncodedKeySpec(keyBytes)
+            def kf = KeyFactory.getInstance("RSA")
+            def privateKey = kf.generatePrivate(spec)
+
+            def cf = CertificateFactory.getInstance("X.509")
+            def certs = cf.generateCertificates(certFile.newInputStream())
+            def chain = certs.toArray(new Certificate[0])
+
+            def ks = KeyStore.getInstance("PKCS12")
+            ks.load(null, null)
+            ks.setKeyEntry("platform", privateKey, "android".toCharArray(), chain)
+
+            keystoreFile.withOutputStream { out ->
+                ks.store(out, "android".toCharArray())
+            }
+            logger.info("Generated platform.p12 from platform.pk8 and platform.x509.pem")
+        } catch (Exception e) {
+            logger.error("Error generating platform.p12: " + e)
+        }
+    }
+}
+generatePlatformKeystore()
+
+android {
+    namespace 'com.dolby.daxappui'
+    compileSdk 35
+    defaultConfig {
+        applicationId 'com.dolby.daxappui'
+        minSdk 28
+        targetSdk 29
+        versionCode 29
+        versionName 'DAX3_3.5.5.12_r1'
+    }
+    signingConfigs {
+        platform {
+            storeFile file("${rootDir}/platform.p12")
+            storePassword 'android'
+            keyAlias 'platform'
+            keyPassword 'android'
+            storeType 'PKCS12'
+        }
+    }
+    buildTypes {
+        debug {
+            signingConfig signingConfigs.platform
+        }
+        release {
+            minifyEnabled false
+            signingConfig signingConfigs.platform
+        }
+    }
+    compileOptions { sourceCompatibility JavaVersion.VERSION_1_8; targetCompatibility JavaVersion.VERSION_1_8 }
+    java {
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(21)
+        }
+    }
+    androidResources { noCompress += ['ogg', 'png'] }
+}
+dependencies {
+    implementation 'com.android.support:appcompat-v7:28.0.0'
+    implementation 'com.android.support:design:28.0.0'
+    implementation 'com.android.support:leanback-v17:28.0.0'
+    compileOnly project(':hidden-api')
+}
+// Compile against the platform signatures used by the original system application.
+// These declarations are never included in the APK.
+tasks.withType(JavaCompile).configureEach {
+    dependsOn ':hidden-api:jar'
+    doFirst {
+        options.bootstrapClasspath = files(project(':hidden-api').tasks.named('jar').get().archiveFile, android.bootClasspath)
+    }
+}

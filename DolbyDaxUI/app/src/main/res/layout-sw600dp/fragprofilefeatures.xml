@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:orientation="vertical" android:layout_width="fill_parent" android:layout_height="fill_parent"
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <TextView android:textSize="16.0sp" android:textColor="@color/colorText" android:id="@id/profileDescription" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_marginTop="42.0dip" android:text="@string/dolby_dynamic_profile" android:lineSpacingExtra="3.0dip" android:textDirection="anyRtl" android:background="@drawable/card_feature_box" android:paddingStart="14.0dip" android:paddingEnd="14.0dip" android:paddingTop="12.0dip" android:paddingBottom="12.0dip" />
+    <RelativeLayout android:id="@id/ieqLayout" android:visibility="visible" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_marginTop="42.0dip">
+        <TextView android:textSize="16.0sp" android:textColor="@color/colorText" android:id="@id/ieqText" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/ieq_text" android:layout_alignParentStart="true" />
+        <TextView android:textSize="16.0sp" android:textColor="@color/colorTextSelected" android:id="@id/ieqName" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_alignTop="@id/ieqText" android:fontFamily="font" android:layout_marginStart="11.0dip" android:layout_toEndOf="@id/ieqText" />
+        <RelativeLayout android:id="@id/equalizerView" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="12.0dip" android:layout_below="@id/ieqText">
+            <GridView android:id="@id/equalizerListView" android:scrollbars="none" android:clickable="true" android:layout_width="312.0dip" android:layout_height="wrap_content" android:listSelector="@android:color/transparent" android:horizontalSpacing="@dimen/ieq_horizontal_spacing_normal" android:numColumns="3" android:choiceMode="singleChoice" android:soundEffectsEnabled="false" />
+            <LinearLayout android:orientation="horizontal" android:id="@id/equalizerListOff" android:background="@android:color/transparent" android:layout_width="wrap_content" android:layout_height="wrap_content" android:soundEffectsEnabled="false" android:layout_marginStart="32.0dip" android:layout_toEndOf="@id/equalizerListView">
+                <LinearLayout android:gravity="center" android:id="@id/equalizerListOffLayout" android:layout_width="104.0dip" android:layout_height="wrap_content">
+                    <ImageView android:layout_gravity="center" android:id="@id/icon_off" android:layout_width="wrap_content" android:layout_height="wrap_content" android:src="@drawable/ic_none_off_ieq" android:scaleType="centerInside" />
+                </LinearLayout>
+            </LinearLayout>
+        </RelativeLayout>
+    </RelativeLayout>
+    <RelativeLayout android:id="@id/featureDeSwitches" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="42.0dip">
+        <RelativeLayout android:id="@id/deView" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_alignParentTop="true" android:layout_alignParentStart="true">
+            <TextView android:textSize="16.0sp" android:textColor="@color/colorText" android:ellipsize="end" android:id="@id/deText" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/dialogue_enhancer" android:maxLines="1" />
+            <RelativeLayout android:gravity="center_vertical" android:layout_width="wrap_content" android:layout_height="41.0dip" android:layout_marginTop="1.0dip" android:layout_below="@id/deText">
+                <SeekBar android:thumbTint="@null" android:progressTint="@null" android:progressBackgroundTint="@null" android:background="@null" android:id="@id/deButton" android:paddingTop="10.0dip" android:paddingBottom="10.0dip" android:layout_width="wrap_content" android:layout_height="wrap_content" android:maxWidth="260.0dip" android:maxHeight="5.0dip" android:max="16" android:progress="6" android:progressDrawable="@drawable/de_seekbar_track" android:minWidth="260.0dip" android:minHeight="5.0dip" android:thumb="@drawable/de_seekbar_thumb" android:thumbOffset="10.0dip" android:layout_centerVertical="true" android:paddingStart="0.0dip" android:paddingEnd="0.0dip" />
+            </RelativeLayout>
+        </RelativeLayout>
+    </RelativeLayout>
+</LinearLayout>

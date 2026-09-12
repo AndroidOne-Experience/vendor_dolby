@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<lint>
+    <!-- Preserve target 29 behavior. This reconstruction is not a Play submission. -->
+    <issue id="ExpiredTargetSdkVersion"><ignore path="build.gradle" /></issue>
+    <!-- False positives: each named parent has an explicit parent (including parent=""). -->
+    <issue id="ResourceCycle">
+        <ignore regexp=".*Base\.Widget\.AppCompat\.DrawerArrowToggle is the implied parent.*" />
+        <ignore regexp=".*Base\.V14\.Theme\.MaterialComponents(\.Light)? is the implied parent.*" />
+    </issue>
+    <!-- Original tablet-only resources; current call sites are tablet branches. -->
+    <issue id="MissingDefaultResource">
+        <ignore path="src/main/res/values-sw600dp/dimens.xml" />
+        <ignore path="src/main/res/layout-sw600dp/profile_list_item.xml" />
+    </issue>
+    <!-- Existing original constraint refers outside its parent. Preserve and flag for device review. -->
+    <issue id="NotSibling"><ignore path="src/main/res/layout/fragprofilefeatures.xml" /></issue>
+</lint>

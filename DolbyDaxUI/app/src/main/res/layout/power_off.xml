@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:id="@id/poweroffLayout" android:background="@android:color/transparent" android:layout_width="fill_parent" android:layout_height="fill_parent"
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <TextView android:textSize="18.0sp" android:textColor="@color/colorPowerOffText" android:id="@id/powerOffText" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/power_off_text" android:layout_centerInParent="true" android:textDirection="anyRtl" />
+</RelativeLayout>

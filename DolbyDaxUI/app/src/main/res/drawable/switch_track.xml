@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="@color/colorSwitchTrack" />
+            <corners android:radius="100.0dip" />
+            <stroke android:width="2.0dip" android:color="@color/colorSwitchTrackStroke" />
+            <size android:height="21.0dip" android:width="44.0dip" />
+        </shape>
+    </item>
+    <item android:top="9.0dip" android:bottom="9.0dip" android:start="28.0dip" android:end="8.0dip">
+        <shape android:shape="line">
+            <stroke android:width="2.0dip" android:color="@color/colorSwitchTrackOffLine" />
+            <size android:height="2.0dip" android:width="8.0dip" />
+        </shape>
+    </item>
+    <item android:top="8.0dip" android:bottom="8.0dip" android:start="9.0dip" android:end="28.0dip">
+        <shape android:shape="oval">
+            <solid android:color="@color/colorSwitchTrackOnOval" />
+            <size android:height="6.0dip" android:width="6.0dip" />
+        </shape>
+    </item>
+</layer-list>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="fill_parent"
+    android:gravity="center_vertical"
+    android:layout_gravity="center_vertical">
+    <Switch
+        android:id="@+id/nav_switch_launcher_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:gravity="center_vertical"
+        android:layout_marginTop="2.0dip"
+        android:layout_marginStart="8.0dip"
+        android:layout_marginEnd="12.0dip"
+        android:background="@null"
+        android:thumb="@drawable/switch_thumb"
+        android:track="@drawable/switch_track"
+        android:clickable="true"
+        android:focusable="true" />
+</LinearLayout>

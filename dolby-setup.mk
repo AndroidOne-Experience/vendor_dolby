@@ -33,6 +33,15 @@ PRODUCT_VENDOR_PROPERTIES += \
 PRODUCT_COPY_FILES += \
     $(DOLBY_PATH)/soundfx/dax-default.xml:$(TARGET_COPY_OUT_VENDOR)/etc/dolby/dax-default.xml
 
+# Dolby App permissions & sysconfig
+PRODUCT_PACKAGES += \
+    config-com.dolby.daxappui.xml \
+    privapp-permissions-com.dolby.daxappui.xml
+
+# Dolby App
+PRODUCT_PACKAGES += \
+	DolbyDaxUI
+
 # Dolby Vision
 ifeq ($(TARGET_SUPPORTS_DOVI),true)
 # SEPolicy

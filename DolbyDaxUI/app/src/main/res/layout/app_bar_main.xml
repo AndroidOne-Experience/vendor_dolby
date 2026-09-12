@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:layout_width="fill_parent" android:layout_height="fill_parent"
+  xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
+    <android.support.design.widget.AppBarLayout android:theme="@style/AppTheme.AppBarOverlay" android:id="@id/appBarLayout" android:background="@color/colorTitleBar" android:layout_width="fill_parent" android:layout_height="wrap_content" app:elevation="0.0dip">
+        <FrameLayout android:layout_width="fill_parent" android:layout_height="?actionBarSize">
+            <android.support.v7.widget.Toolbar android:id="@id/toolbar" android:background="@color/colorTitleBar" android:layout_width="fill_parent" android:layout_height="match_parent" android:backgroundTint="@color/colorMainBackground" app:contentInsetEnd="0.0dip" app:contentInsetLeft="0.0dip" app:contentInsetRight="0.0dip" app:contentInsetStart="0.0dip" />
+            <RelativeLayout android:id="@id/dolbyToolbar" android:layout_width="fill_parent" android:layout_height="match_parent">
+                <ImageView android:id="@id/dsLogoText" android:layout_width="150.0dip" android:layout_height="22.0dip" android:layout_centerInParent="true" android:adjustViewBounds="true" android:scaleType="fitCenter" android:src="@drawable/ic_dolby_atmos_logo" android:tint="@color/colorText" android:contentDescription="@string/app_name" />
+                <fragment android:name="com.dolby.daxappui.FragPower" android:layout_gravity="end" android:id="@id/fragPower" android:background="@android:color/transparent" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_centerVertical="true" android:layout_marginEnd="10.0dip" android:layout_alignParentEnd="true" />
+            </RelativeLayout>
+        </FrameLayout>
+    </android.support.design.widget.AppBarLayout>
+</RelativeLayout>

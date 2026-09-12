@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="activity_horizontal_margin">16.0dip</dimen>
+    <dimen name="ieq_horizontal_spacing_normal">4.0dip</dimen>
+    <dimen name="ieq_horizontal_spacing_off">40.0dip</dimen>
+    <dimen name="ieq_margin_start">24.0dip</dimen>
+    <dimen name="nav_header_height">64.0dip</dimen>
+    <dimen name="geq_bar_end_padding">24.0dip</dimen>
+    <dimen name="geq_view_height">215.0dip</dimen>
+</resources>

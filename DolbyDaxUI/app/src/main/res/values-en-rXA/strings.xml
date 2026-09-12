@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">[Ðöļɓý Åţḿöš one two]</string>
+    <string name="app_name_ds1">[Ðöļɓý Åûðîö one two]</string>
+    <string name="app_title">[Ðöļɓý Šöûñð one two]</string>
+    <string name="balanced">[βåļåñçéð one two]</string>
+    <string name="bright">[βŕîĝĥţ one two]</string>
+    <string name="custom">[Çûšţöḿ one two]</string>
+    <string name="dialogue_enhancer">[Ðîåļöĝûé Éñĥåñçéŕ one two three]</string>
+    <string name="dolby_atmos_logo_mark">[® one]</string>
+    <string name="dolby_atmos_mark">[Ðöļɓý Åţḿöš one two]</string>
+    <string name="dolby_dynamic_profile">[Ðöļɓý þŕöçéššîñĝ îðéñţîƒîéš ţĥé çöñţéñţ åñð þéŕƒöŕḿš åûţöḿåţîç åðĵûšţḿéñţš ţö ðéļîVéŕ ţĥé ɓéšţ šöûñð. one two three four five six seven eight nine ten eleven]</string>
+    <string name="dolby_explore_atmos_learn_more">[Ļéåŕñ ḿöŕé one two]</string>
+    <string name="dolby_explore_atmos_remark">[Ðöļɓý Åţḿöš çŕéåţéš åñ åḿåžîñĝ åûðîö éхþéŕîéñçé ŵîţĥ ḿûļţîðîḿéñšîöñåļ šöûñð ţĥåţ ƒļöŵš åɓöVé åñð åŕöûñð ýöû. one two three four five six seven eight nine ten eleven]</string>
+    <string name="ds1_power_off_text">[Ðöļɓý Åûðîö îš ţûŕñéð öƒƒ. one two three four]</string>
+    <string name="dynamic">[Ðýñåḿîç one two]</string>
+    <string name="explore_dolby">[Éхþļöŕé Ðöļɓý Åţḿöš one two three]</string>
+    <string name="graphic_equalizer">[Ĝŕåþĥîç ÉQûåļîžéŕ one two three]</string>
+    <string name="hdmi_connected_text">[Ðöļɓý Šöûñð Þŕöçéššîñĝ ðöéš ñöţ šûþþöŕţ ĤÐḾÎ öñ ḿöɓîļé ðéVîçéš. Ŵĥéñ åñ ĤÐḾÎ éñð þöîñţ îš çöññéçţéð, Ðöļɓý Šöûñð Þŕöçéššîñĝ çöñţŕöļš åŕé ţéḿþöŕåŕîļý ðîšåɓļéð. one two three four five six seven eight nine ten eleven twelve thirteen fourteen]</string>
+    <string name="ieq_text">[Îñţéļļîĝéñţ Ţöñé one two three]</string>
+    <string name="max_edit_gain">[12 one]</string>
+    <string name="min_edit_gain">[-12 one]</string>
+    <string name="movie">[ḾöVîé one]</string>
+    <string name="music">[Ḿûšîç one]</string>
+    <string name="navigation_drawer_close">[Çļöšé ñåVîĝåţîöñ ðŕåŵéŕ one two three]</string>
+    <string name="navigation_drawer_open">[Öþéñ ñåVîĝåţîöñ ðŕåŵéŕ one two three]</string>
+    <string name="no_effect">[Ñö éƒƒéçţ one two]</string>
+    <string name="power_off_text">[Ðöļɓý Šöûñð îš ţûŕñéð öƒƒ. one two three four]</string>
+    <string name="reset">[Ŕéšéţ one]</string>
+    <string name="warm">[Ŵåŕḿ one]</string>
+</resources>

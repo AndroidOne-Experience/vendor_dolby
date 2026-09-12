@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:orientation="horizontal" android:layout_width="fill_parent" android:layout_height="wrap_content"
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <ImageView android:id="@id/profileIcon" android:layout_width="wrap_content" android:layout_height="wrap_content" android:src="@drawable/ic_movie_profile_panel" android:layout_centerVertical="true" android:layout_marginStart="80.0dip" android:layout_alignParentStart="true" />
+    <TextView android:textSize="16.0sp" android:textColor="@color/colorText" android:id="@id/profileName" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_centerVertical="true" android:fontFamily="Roboto Regular" android:layout_marginStart="24.0dip" android:layout_toEndOf="@id/profileIcon" />
+</RelativeLayout>

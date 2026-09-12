@@ -1,0 +1,8 @@
+.gradle/
+**/build/
+local.properties
+.idea/
+*.iml
+platform.p12
+platform.pk8
+platform.x509.pem

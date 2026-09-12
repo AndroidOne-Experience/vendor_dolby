@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Dolby Atmos</string>
+    <string name="launcher_app_name" translatable="false">Dolby</string>
+    <string name="app_name_ds1">Dolby Audio</string>
+    <string name="app_title">Dolby Atmos</string>
+    <string name="appbar_scrolling_view_behavior">android.support.design.widget.AppBarLayout$ScrollingViewBehavior</string>
+    <string name="balanced">Balanced</string>
+    <string name="bright">Bright</string>
+    <string name="custom">Custom</string>
+    <string name="dialogue_enhancer">Dialogue Enhancer</string>
+    <string name="dialogue_enhancer_summary" translatable="false">Improve speech clarity for movies and audio content</string>
+    <string name="profile_settings_title" translatable="false">Profile settings</string>
+    <string name="dolby_atmos_logo_mark">®</string>
+    <string name="dolby_atmos_mark">Dolby Atmos</string>
+    <string name="dolby_dynamic_profile">Dolby processing identifies the content and performs automatic adjustments to deliver the best sound.</string>
+    <string name="dolby_explore_atmos_learn_more">Learn more</string>
+    <string name="dolby_explore_atmos_remark">Dolby Atmos creates an amazing audio experience with multidimensional sound that flows above and around you.</string>
+    <string name="ds1_power_off_text">Dolby Audio is turned off.</string>
+    <string name="dynamic">Dynamic</string>
+    <string name="explore_dolby">Explore Dolby Atmos</string>
+    <string name="appearance">Appearance</string>
+    <string name="appearance_light">Light</string>
+    <string name="appearance_dark">Dark</string>
+    <string name="appearance_system">System default</string>
+    <string name="appearance_description">Choose how Dolby Atmos looks on your device.</string>
+    <string name="appearance_light_summary">Bright and clean</string>
+    <string name="appearance_dark_summary">Easy on the eyes</string>
+    <string name="appearance_system_summary">Follow your device theme</string>
+    <string name="graphic_equalizer">Graphic Equalizer</string>
+    <string name="hdmi_connected_text">Dolby Sound Processing does not support HDMI on mobile devices. When an HDMI end point is connected, Dolby Sound Processing controls are temporarily disabled.</string>
+    <string name="ieq_text">Intelligent Tone:</string>
+    <string name="max_edit_gain">12</string>
+    <string name="min_edit_gain">-12</string>
+    <string name="movie">Movie</string>
+    <string name="music">Music</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="no_effect">No effect</string>
+    <string name="power_off_text">Dolby Atmos is turned off.</string>
+    <string name="reset">Reset</string>
+    <string name="lock_equalizer">Lock equalizer</string>
+    <string name="unlock_equalizer">Unlock equalizer</string>
+    <string name="reset_confirmation_title">Reset all profiles?</string>
+    <string name="reset_confirmation_text">This will reset your profile settings to factory defaults recommended by Dolby.</string>
+    <string name="reset_continue">Continue</string>
+    <string name="hide_launcher_icon" translatable="false">Hide Launcher Icon</string>
+    <string name="warm">Warm</string>
+    <string name="bass_enhancer">Bass Enhancer</string>
+    <string name="volume_leveler">Volume Leveler</string>
+    <string name="surround_virtualizer">Surround Virtualizer</string>
+    <string name="volume_leveler_summary" translatable="false">Hear the same volume level for each audio source</string>
+    <string name="bass_enhancer_summary" translatable="false">Enhance low frequencies to produce deeper, richer bass</string>
+    <string name="surround_virtualizer_summary" translatable="false">Create a surround sound experience through your connected device</string>
+    <string name="dolby_settings_summary">Rich cinematic sound that surrounds you</string>
+    <string name="dolby_settings_unavailable">Dolby Atmos is temporarily unavailable. Try again.</string>
+</resources>

@@ -1,0 +1,48 @@
+android_app {
+    name: "DolbyDaxUI",
+
+    manifest: "AndroidManifest.xml",
+    srcs: ["app/src/main/java/**/*.java"],
+    resource_dirs: ["app/src/main/res"],
+
+    // Use actual framework APIs, never the Gradle-only hidden-api declarations.
+    platform_apis: true,
+    min_sdk_version: "28",
+    target_sdk_version: "29",
+    java_version: "1.8",
+
+    static_libs: [
+        "android-support-v7-appcompat",
+        "android-support-design",
+        "android-support-v17-leanback",
+    ],
+
+    certificate: "platform",
+    privileged: true,
+    system_ext_specific: true,
+    overrides: ["MusicFX"],
+    required: ["privapp-permissions-com.dolby.daxappui.xml"],
+    dex_preopt: {
+        enabled: false,
+    },
+    aaptflags: [
+        "-0",
+        "ogg",
+        "-0",
+        "png",
+    ],
+}
+
+prebuilt_etc {
+    name: "config-com.dolby.daxappui.xml",
+    src: "sysconfig/config-com.dolby.daxappui.xml",
+    sub_dir: "sysconfig",
+    system_ext_specific: true,
+}
+
+prebuilt_etc {
+    name: "privapp-permissions-com.dolby.daxappui.xml",
+    src: "permissions/privapp-permissions-com.dolby.daxappui.xml",
+    sub_dir: "permissions",
+    system_ext_specific: true,
+}

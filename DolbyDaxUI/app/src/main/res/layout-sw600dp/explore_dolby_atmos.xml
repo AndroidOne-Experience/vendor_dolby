@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:orientation="vertical" android:background="@color/colorMainBackground" android:layout_width="fill_parent" android:layout_height="fill_parent"
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <LinearLayout android:layout_gravity="start|center|top" android:orientation="horizontal" android:id="@id/exploreatmoslogo" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="48.0dip" android:layout_marginStart="88.0dip">
+        <TextView android:textSize="34.0sp" android:textColor="@color/colorExploreDolbyNameText" android:layout_gravity="top" android:id="@id/txtupdolbyname" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/dolby_atmos_mark" />
+        <TextView android:textSize="18.0sp" android:textColor="@color/colorExploreDolbyText" android:layout_gravity="bottom" android:id="@id/txtupdolbylogomark" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginBottom="5.0dip" android:text="@string/dolby_atmos_logo_mark" android:maxLines="1" />
+    </LinearLayout>
+    <TextView android:textSize="16.0sp" android:textColor="@color/colorExploreDolbyText" android:layout_gravity="start|center|top" android:id="@id/txtupremark" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="18.0dip" android:maxWidth="600.0dip" android:text="@string/dolby_explore_atmos_remark" android:textDirection="anyRtl" android:layout_marginStart="88.0dip" android:layout_marginEnd="334.0dip" />
+    <RelativeLayout android:id="@id/btnupgotodolbyatmos" android:focusable="true" android:background="@drawable/background_button_selector" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="32.0dip" android:layout_marginStart="88.0dip">
+        <TextView android:textSize="15.0sp" android:textColor="@color/explore_button_text" android:gravity="center_horizontal" android:id="@id/txtuplearnmore" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="11.0dip" android:layout_marginBottom="10.0dip" android:text="@string/dolby_explore_atmos_learn_more" android:layout_marginStart="34.5dip" android:layout_marginEnd="33.5dip" />
+    </RelativeLayout>
+</LinearLayout>

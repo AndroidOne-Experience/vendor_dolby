@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Dolby Atmos</string>
+    <string name="app_title">Dolby Atmos</string>
+    <string name="balanced">Сбалансированный</string>
+    <string name="bright">Яркий</string>
+    <string name="custom">Настраиваемый</string>
+    <string name="dialogue_enhancer">Улучшение диалогов</string>
+    <string name="dolby_dynamic_profile">Dolby Atmos автоматически настраивает эквалайзеры для наилучшего звучания.</string>
+    <string name="dolby_explore_atmos_learn_more">Подробнее</string>
+    <string name="dolby_explore_atmos_remark">Технология Dolby Atmos создает впечатляющее объемное звучание, которое окружает вас со всех сторон.</string>
+    <string name="ds1_power_off_text">Dolby Atmos выключен</string>
+    <string name="dynamic">Динамический</string>
+    <string name="explore_dolby">Узнать о Dolby Atmos</string>
+    <string name="graphic_equalizer">Графический эквалайзер</string>
+    <string name="hdmi_connected_text">Dolby Atmos не поддерживает HDMI на мобильных устройствах. При подключении устройств к порту HDMI технология Dolby Atmos временно отключаются.</string>
+    <string name="ieq_text">Смарт-эквалайзер</string>
+    <string name="movie">Фильмы</string>
+    <string name="music">Музыка</string>
+    <string name="no_effect">Выключен</string>
+    <string name="power_off_text">Dolby Atmos выключен</string>
+    <string name="reset">Сброс настроек</string>
+    <string name="warm">Теплый</string>
+</resources>

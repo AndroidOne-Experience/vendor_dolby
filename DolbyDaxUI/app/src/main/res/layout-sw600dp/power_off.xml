@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:id="@id/poweroffLayout" android:layout_width="fill_parent" android:layout_height="fill_parent"
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <FrameLayout android:layout_width="fill_parent" android:layout_height="fill_parent" />
+    <RelativeLayout android:id="@id/powerOffProfilePanel" android:layout_width="512.0dip" android:layout_height="fill_parent" android:layout_marginTop="64.0dip" android:layout_above="@id/powerOffBottom" android:layout_alignParentTop="true" android:layout_marginStart="358.0dip" android:elevation="5.0dip">
+        <TextView android:textSize="34.0sp" android:textColor="@color/colorPowerOffText" android:id="@id/powerOffText" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/power_off_text" android:layout_centerInParent="true" android:textDirection="anyRtl" />
+    </RelativeLayout>
+    <RelativeLayout android:id="@id/powerOffBottom" android:layout_width="fill_parent" android:layout_height="10.0dip" android:layout_alignParentBottom="true" />
+</RelativeLayout>

@@ -1,0 +1,15 @@
+plugins { id 'java-library' }
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+// Public types referenced by the hidden platform declarations (IBinder, RemoteException).
+def sdkProperties = new Properties()
+def localProperties = rootProject.file('local.properties')
+if (localProperties.exists()) localProperties.withInputStream { sdkProperties.load(it) }
+def sdkDirectory = sdkProperties.getProperty('sdk.dir') ?: System.getenv('ANDROID_HOME') ?: System.getenv('ANDROID_SDK_ROOT')
+dependencies { compileOnly files("${sdkDirectory}/platforms/android-35/android.jar") }

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:orientation="vertical" android:id="@id/profileLayout" android:layout_width="fill_parent" android:layout_height="fill_parent"
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <LinearLayout android:orientation="vertical" android:id="@id/profileTop" android:layout_width="fill_parent" android:layout_height="0.0dip" android:layout_weight="50.0" android:layout_marginStart="24.0dip">
+        <RelativeLayout android:id="@id/geqTextLayout" android:layout_width="fill_parent" android:layout_height="wrap_content" android:minHeight="@dimen/section_header_height" android:layout_marginTop="22.0dip">
+            <TextView android:textSize="16.0sp" android:textColor="@color/colorText" android:id="@id/geqText" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/graphic_equalizer" android:layout_centerVertical="true" android:layout_alignParentStart="true" />
+            <ImageButton
+                android:id="@id/geqLockButton"
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:layout_toStartOf="@id/profileResetButton"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="6dp"
+                android:background="@drawable/profile_lock_chip"
+                android:backgroundTint="@null"
+                android:contentDescription="@string/lock_equalizer"
+                android:minWidth="0dp"
+                android:minHeight="0dp"
+                android:padding="5dp"
+                android:src="@drawable/ic_eq_unlock" />
+            <Button
+                android:id="@id/profileResetButton"
+                style="?android:attr/borderlessButtonStyle"
+                android:background="@drawable/profile_reset_chip"
+                android:backgroundTint="@null"
+                android:minHeight="0dp"
+                android:paddingTop="0dp"
+                android:paddingBottom="0dp"
+                android:gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="26dp"
+                android:minWidth="48dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="8dp"
+                android:paddingStart="6dp"
+                android:paddingEnd="6dp"
+                android:text="@string/reset"
+                android:textAllCaps="true"
+                android:textSize="11sp"
+                android:textColor="@color/colorText"
+                android:visibility="invisible" />
+        </RelativeLayout>
+        <com.dolby.daxappui.GeqViewLayout android:id="@id/GeqViewLayout" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_marginTop="6.0dip" android:layout_marginEnd="8.0dip">
+            <com.dolby.daxappui.GeqView android:id="@id/geqView" android:layout_width="fill_parent" android:layout_height="fill_parent" android:layout_alignParentTop="true" android:layout_alignParentStart="true" />
+        </com.dolby.daxappui.GeqViewLayout>
+    </LinearLayout>
+    <LinearLayout android:orientation="vertical" android:id="@id/profileFeatures" android:layout_width="fill_parent" android:layout_height="0.0dip" android:layout_weight="50.0" android:layout_marginStart="24.0dip" android:layout_marginEnd="24.0dip">
+        <include android:layout_gravity="end" android:background="@android:color/transparent" android:layout_width="fill_parent" android:layout_height="wrap_content" layout="@layout/fragprofilefeatures" />
+    </LinearLayout>
+</LinearLayout>
