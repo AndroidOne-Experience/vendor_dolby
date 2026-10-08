@@ -10,6 +10,7 @@ import android.service.quicksettings.Tile;
 import android.service.quicksettings.TileService;
 import android.util.Log;
 import com.dolby.dax.DolbyAudioEffect;
+import com.dolby.dax.SpatialAudioProfile;
 import com.dolby.daxservice.DaxService;
 
 public class DaxTileService extends TileService {
@@ -148,6 +149,7 @@ public class DaxTileService extends TileService {
                 }
                 if (effect != null) {
                     effect.setDsOn(z);
+                    SpatialAudioProfile.applyDolbyPower(this, effect);
                 }
             } catch (Exception e) {
                 Log.e(TAG, "Failed to set Dolby state: " + e.getMessage());

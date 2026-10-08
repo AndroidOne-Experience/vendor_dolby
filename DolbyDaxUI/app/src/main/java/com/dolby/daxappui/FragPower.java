@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import com.dolby.dax.DolbyAudioEffect;
+import com.dolby.dax.SpatialAudioProfile;
 
 public class FragPower extends Fragment implements View.OnClickListener {
     private ImageView imgOn;
@@ -80,6 +81,7 @@ public class FragPower extends Fragment implements View.OnClickListener {
                 boolean z = !dolbyAudioEffect.getDsOn();
                 if (dolbyAudioEffect.hasControl()) {
                     dolbyAudioEffect.setDsOn(z);
+                    SpatialAudioProfile.applyDolbyPower(this.mContext, dolbyAudioEffect);
                     // The engine changes synchronously, so mirror it immediately instead of
                     // waiting for a DMS broadcast or the next Activity onResume().
                     this.mFObserver.dsPowerChanged(z);

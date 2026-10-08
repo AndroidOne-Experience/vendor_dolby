@@ -12,6 +12,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import com.dolby.dax.DolbyAudioEffect;
+import com.dolby.dax.SpatialAudioProfile;
 import com.dolby.daxappui.R;
 import com.dolby.daxservice.DaxService;
 
@@ -69,6 +70,7 @@ public final class DaxSettingsProvider extends ContentProvider {
                 if (!effect.hasControl()) throw new IllegalStateException("Dolby is busy");
                 boolean enabled = extras.getBoolean("checked_state");
                 effect.setDsOn(enabled);
+                SpatialAudioProfile.applyDolbyPower(getContext(), effect);
                 result.putBoolean("set_checked_error", effect.getDsOn() != enabled);
                 notifySettings();
             } else if ("isChecked".equals(method)) {

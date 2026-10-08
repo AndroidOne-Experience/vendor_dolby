@@ -183,7 +183,7 @@ public final class DaxService extends Service {
                     deviceAudioManager.registerAudioDeviceCallback(audioDeviceCallback, handler);
                 }
                 // Adopt an already-enabled system switch before applying the saved profile.
-                if (SpatialAudioProfile.isEnabledForActiveBluetoothDevice(this)) syncSpatialProfile();
+                if (effect.getDsOn() && SpatialAudioProfile.isEnabledForActiveBluetoothDevice(this)) syncSpatialProfile();
                 else applySpatialProfile();
             }
             // Initial synchronization after restoration and after every reconnection.
@@ -209,6 +209,14 @@ public final class DaxService extends Service {
                 // A delayed HAL echo is a notification, not another user command:
                 // replaying it can undo a newer change made in Bluetooth Settings.
             }
+            if ("ds_state_change".equals(update.event)) {
+                boolean powered = effect.getDsOn();
+                if (powered != (update.value > 0)) return;
+                if (!powered) {
+                    handler.removeCallbacks(spatialDisabledTask);
+                    SpatialAudioProfile.applyDolbyPower(this, effect);
+                }
+            }
             settings.save(effect, user, update);
             sendUpdate(update.event, update.value);
         } catch (RuntimeException e) {
@@ -228,7 +236,8 @@ public final class DaxService extends Service {
     private void applySpatialProfile() {
         if (stopped || effect == null || spatializer == null) return;
         try {
-            SpatialAudioProfile.apply(this, effect.getProfile());
+            if (effect.getDsOn()) SpatialAudioProfile.apply(this, effect.getProfile());
+            else SpatialAudioProfile.applyDolbyPower(this, effect);
         } catch (RuntimeException e) {
             Log.w(TAG, "Cannot apply Spatial Audio connection state", e);
         }
@@ -253,7 +262,7 @@ public final class DaxService extends Service {
             if (enabled && !SpatialAudioProfile.isEnabledForActiveBluetoothDevice(this)) return;
             int current = effect.getProfile();
             // Route loss (including a temporary call route) is not a user switch-off.
-            if (!enabled && (!restoreOnDisable || !spatializer.isAvailable()
+            if (!enabled && (!effect.getDsOn() || !restoreOnDisable || !spatializer.isAvailable()
                     || current != SpatialAudioProfile.ID)) return;
             int target = enabled ? SpatialAudioProfile.ID
                     : settings.lastNonSpatialProfile(user, effect.getNumOfProfiles());

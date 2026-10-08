@@ -100,6 +100,22 @@ public final class SpatialAudioProfile {
     }
 
     public static void apply(Context context, int profile) {
+        apply(context, profile, true);
+    }
+
+    /** A Dolby power command affects spatialization only for the Bluetooth spatial profile. */
+    public static void applyDolbyPower(Context context, DolbyAudioEffect effect) {
+        if (context == null || effect == null || !isSupported()) return;
+        try {
+            if (effect.getProfile() == ID && isBluetoothAudioConnected(context)) {
+                apply(context, ID, effect.getDsOn());
+            }
+        } catch (RuntimeException e) {
+            Log.w("SpatialAudioProfile", "Cannot apply Dolby power to Bluetooth spatial audio", e);
+        }
+    }
+
+    private static void apply(Context context, int profile, boolean dolbyEnabled) {
         if (!isSupported() || !isVisible(profile)) return;
         try {
             Spatializer spatializer = getSpatializer(context);
@@ -109,7 +125,7 @@ public final class SpatialAudioProfile {
             if (manager != null) {
                 for (AudioDeviceInfo device : manager.getDevices(AudioManager.GET_DEVICES_OUTPUTS)) {
                     if (!isBluetoothDeviceType(device.getType())) continue;
-                    if (profile == ID) addCompatibleAudioDevice(spatializer, device);
+                    if (profile == ID && dolbyEnabled) addCompatibleAudioDevice(spatializer, device);
                     else removeCompatibleAudioDevice(spatializer, device);
                 }
             }
