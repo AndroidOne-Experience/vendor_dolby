@@ -1,5 +1,7 @@
 package com.dolby.daxappui;
 
+import com.dolby.dax.SpatialAudioProfile;
+
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -116,11 +118,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 MainActivity.this.releaseDolbyAudio();
                             }
                         }
-                        if (intExtra >= 0 && intExtra < 4) {
+                        if (SpatialAudioProfile.isVisible(intExtra)) {
                             MainActivity.this.profileSettingsChanged(intExtra);
                             return;
                         }
-                        Log.d("MainActivity", "profile index is out of 0~3");
+                        Log.d("MainActivity", "profile index is not visible");
                         return;
                     }
                     if (c != 2) {
@@ -131,11 +133,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         return;
                     } else {
                         int intExtra2 = intent.getIntExtra("Integer Value", 0);
-                        if (intExtra2 >= 0 && intExtra2 < 4) {
+                        if (SpatialAudioProfile.isVisible(intExtra2)) {
                             MainActivity.this.resetProfile(intExtra2);
                             return;
                         }
-                        Log.d("MainActivity", "profile index is out of 0~3");
+                        Log.d("MainActivity", "profile index is not visible");
                         return;
                     }
                 }
@@ -257,6 +259,7 @@ public void profileSettingsChanged(int i) {
         FragProfilePresets fragProfilePresets = (FragProfilePresets) fragMainContent.getChildFragmentManager().findFragmentById(R.id.fragProfilePanel);
         if (fragProfilePresets != null) {
             fragProfilePresets.updateProfileSettings(i);
+            refreshCurrentProfileTabVisualState((TabLayout) findViewById(R.id.profiletable));
         }
         if (!this.mTabletLayout || (fragProfilePanel = (FragProfilePanel) fragMainContent.getChildFragmentManager().findFragmentById(R.id.fragProfilePanelTablet)) == null) {
             return;
@@ -701,7 +704,7 @@ public int getActiveDevices() {
                 if (effect != null) {
                     try {
                         int activeProfile = effect.getProfile();
-                        if (activeProfile >= 0 && activeProfile < 4) {
+                        if (SpatialAudioProfile.isVisible(activeProfile)) {
                             MainActivity.this.profileSettingsChanged(activeProfile);
                         }
                     } catch (Exception e) {
@@ -837,12 +840,12 @@ public int getActiveDevices() {
         }
         try {
             dsPowerChanged(dolbyAudioEffect.getDsOn());
-            int numOfProfiles = dolbyAudioEffect.getNumOfProfiles();
             int profile = dolbyAudioEffect.getProfile();
-            if (4 <= profile && profile < numOfProfiles) {
+            if (!SpatialAudioProfile.isVisible(profile)) {
                 profile = 0;
             }
-            chooseProfile(profile);
+            // A disconnected Bluetooth device disables spatialization, not the selected profile.
+            // Refreshing/resuming the UI must not overwrite a change made in Settings.
             profileSettingsChanged(profile);
         } catch (Exception e) {
             Log.e("MainActivity", "Failed to setInitUIState", e);
@@ -892,8 +895,8 @@ public int getActiveDevices() {
                 if (this.mDolbyAudio != null) {
                     try {
                         int engineProfile = this.mDolbyAudio.getProfile();
-                        if (engineProfile >= 0 && engineProfile < tabLayout.getTabCount()) {
-                            activeProfile = engineProfile;
+                        if (SpatialAudioProfile.isVisible(engineProfile)) {
+                            activeProfile = SpatialAudioProfile.toPosition(engineProfile);
                         }
                     } catch (RuntimeException e) {
                         Log.w("MainActivity", "Unable to read active profile while refreshing tabs", e);
@@ -903,14 +906,14 @@ public int getActiveDevices() {
                 if (profileToRefresh >= 0 && profileToRefresh < tabLayout.getTabCount()) {
                     TabLayout.Tab activeTab = tabLayout.getTabAt(profileToRefresh);
                     if (activeTab != null && tabLayout.getSelectedTabPosition() != profileToRefresh) {
-                        activeTab.select();
+                        profileSettingsChanged(SpatialAudioProfile.fromPosition(profileToRefresh));
                     }
                 }
                 refreshProfileTabVisualState(tabLayout, profileToRefresh, true);
                 tabLayout.post(new Runnable() {
                     @Override
                     public void run() {
-                        refreshProfileTabVisualState(tabLayout, profileToRefresh, true);
+                        refreshCurrentProfileTabVisualState(tabLayout);
                     }
                 });
             }
@@ -966,7 +969,7 @@ public int getActiveDevices() {
             tabLayout.post(new Runnable() {
                 @Override
                 public void run() {
-                    refreshProfileTabVisualState(tabLayout, -1, false);
+                    refreshCurrentProfileTabVisualState(tabLayout);
                 }
             });
         }
@@ -992,6 +995,13 @@ public int getActiveDevices() {
             this.mDrawerLayout.addView(this.mPowerOffLayout);
         }
         imageView.setImageDrawable(getResources().getDrawable(R.drawable.btn_power_off_titlebar, getTheme()));
+    }
+
+    /** Deferred refreshes must use current state, never a previously captured profile. */
+    private void refreshCurrentProfileTabVisualState(TabLayout tabLayout) {
+        if (tabLayout == null || tabLayout.getChildCount() == 0) return;
+        boolean enabled = tabLayout.getChildAt(0).isEnabled();
+        refreshProfileTabVisualState(tabLayout, tabLayout.getSelectedTabPosition(), enabled);
     }
 
     /**
@@ -1030,7 +1040,7 @@ public int getActiveDevices() {
 
     @Override
     public void profileModificationChanged(int profile) {
-        if (profile < 0 || profile >= 4 || getSupportFragmentManager().getBackStackEntryCount() != 0) {
+        if (!SpatialAudioProfile.isVisible(profile) || getSupportFragmentManager().getBackStackEntryCount() != 0) {
             return;
         }
         FragMainContent main = (FragMainContent) getSupportFragmentManager().findFragmentById(R.id.containerView);
@@ -1081,8 +1091,8 @@ public int getActiveDevices() {
                 if (dolbyAudioEffect.hasControl()) {
                     if (dolbyAudioEffect.getProfile() != i) {
                         dolbyAudioEffect.setProfile(i);
-                        return;
                     }
+                    SpatialAudioProfile.apply(this, i);
                     return;
                 }
                 Log.w("MainActivity", "Dolby audio effect is out of control in chooseProfile");

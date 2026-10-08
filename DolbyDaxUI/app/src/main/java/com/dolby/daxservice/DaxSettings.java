@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.SystemClock;
 import android.util.Log;
 import com.dolby.dax.DolbyAudioEffect;
+import com.dolby.dax.SpatialAudioProfile;
 import org.json.JSONArray;
 import org.json.JSONException;
 
@@ -30,7 +31,16 @@ final class DaxSettings {
     /** Returns true when native state was captured and must not be replayed. */
     boolean initialize(DolbyAudioEffect effect, int user) {
         SharedPreferences defaults = prefs(-1);
-        if (defaults.getInt("schema_version", 0) == SCHEMA_VERSION) return false;
+        if (defaults.getInt("schema_version", 0) == SCHEMA_VERSION) {
+            // Extend existing defaults without discarding the user's four Dolby profiles.
+            if (SpatialAudioProfile.isSupported() && effect.getNumOfProfiles() > SpatialAudioProfile.ID
+                    && !defaults.contains(key(SpatialAudioProfile.ID, GEQ_BAND_GAINS))) {
+                SharedPreferences.Editor editor = defaults.edit();
+                snapshotProfile(effect, editor, SpatialAudioProfile.ID);
+                editor.apply();
+            }
+            return false;
+        }
 
         // Version 1 persisted parameters the OEM service never restored. Discard that
         // state and establish a clean baseline without writing anything back to SWDAP.
@@ -45,8 +55,9 @@ final class DaxSettings {
     }
 
     private void snapshot(DolbyAudioEffect effect, SharedPreferences.Editor editor) {
-        editor.putBoolean("power", effect.getDsOn()).putInt("profile", effect.getProfile());
-        for (int profile = 0; profile < Math.min(4, effect.getNumOfProfiles()); profile++) {
+        editor.putBoolean("power", effect.getDsOn());
+        putProfile(editor, effect.getProfile());
+        for (int profile = 0; profile < Math.min(SpatialAudioProfile.count(), effect.getNumOfProfiles()); profile++) {
             snapshotProfile(effect, editor, profile);
         }
     }
@@ -71,14 +82,36 @@ final class DaxSettings {
         if ("ds_state_change".equals(update.event)) {
             editor.putBoolean("power", update.value > 0);
         } else if ("profile_change".equals(update.event)) {
-            if (update.value < 0 || update.value >= Math.min(4, effect.getNumOfProfiles())) return;
-            editor.putInt("profile", update.value);
+            if (update.value < 0 || update.value >= Math.min(SpatialAudioProfile.count(), effect.getNumOfProfiles())) return;
+            putProfile(editor, update.value);
         } else {
-            if (update.value < 0 || update.value >= Math.min(4, effect.getNumOfProfiles())) return;
+            if (update.value < 0 || update.value >= Math.min(SpatialAudioProfile.count(), effect.getNumOfProfiles())) return;
             // Read the actual post-reset values, not guessed defaults.
             snapshotProfile(effect, editor, update.value);
         }
         editor.apply();
+    }
+
+    void saveSelection(DolbyAudioEffect effect, int user) {
+        SharedPreferences.Editor editor = prefs(user).edit();
+        editor.putBoolean("power", effect.getDsOn());
+        putProfile(editor, effect.getProfile());
+        editor.apply();
+    }
+
+    private static void putProfile(SharedPreferences.Editor editor, int profile) {
+        editor.putInt("profile", profile);
+        if (profile >= 0 && profile < SpatialAudioProfile.ID) {
+            editor.putInt("last_non_spatial_profile", profile);
+        }
+    }
+
+    int lastNonSpatialProfile(int user, int profileCount) {
+        SharedPreferences saved = prefs(user);
+        int profile = saved.getInt("last_non_spatial_profile", saved.getInt("profile", 0));
+        // Older installations may have no non-spatial history yet.
+        return profile >= 0 && profile < Math.min(SpatialAudioProfile.ID, profileCount)
+                ? profile : 0;
     }
 
     void saveAll(DolbyAudioEffect effect, int user) {
@@ -94,7 +127,7 @@ final class DaxSettings {
         // Match the OEM service's proven ordering and parameter subset. In particular,
         // do not replay virtualizer/leveler/enable parameters discovered by readback.
         effect.setDsOn(saved.getBoolean("power", defaults.getBoolean("power", true)));
-        int count = Math.min(4, effect.getNumOfProfiles());
+        int count = Math.min(SpatialAudioProfile.count(), effect.getNumOfProfiles());
         for (int profile = 0; profile < count; profile++) {
             for (int param : PARAMETERS) {
                 if (!isPersistedForProfile(profile, param)) continue;
@@ -123,7 +156,7 @@ final class DaxSettings {
     private static boolean isPersistedForProfile(int profile, int param) {
         if (param == GEQ_BAND_GAINS) return true;
         if (param == DIALOG_ENHANCEMENT_AMOUNT) return profile == 1 || profile == 3;
-        return param == IEQ_PRESET && (profile == 2 || profile == 3);
+        return param == IEQ_PRESET && (profile == 2 || profile == 3 || profile == SpatialAudioProfile.ID);
     }
 
     private static String key(int profile, int param) { return "profile_" + profile + "_" + param; }

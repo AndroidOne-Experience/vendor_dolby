@@ -1,5 +1,7 @@
 package com.dolby.daxappui;
 
+import com.dolby.dax.SpatialAudioProfile;
+
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -20,7 +22,7 @@ class FragProfilePanelPageAdapter extends FragmentStatePagerAdapter {
         this.mFragments = new ArrayList();
         this.mProfileNames = DAXApplication.getInstance().getProfileNames();
         for (int i = 0; i < this.mProfileNames.length; i++) {
-            this.mFragments.add(FragProfilePanel.newInstance(i));
+            this.mFragments.add(FragProfilePanel.newInstance(SpatialAudioProfile.fromPosition(i)));
         }
     }
 
@@ -36,7 +38,7 @@ class FragProfilePanelPageAdapter extends FragmentStatePagerAdapter {
 
     @Override // android.support.v4.app.FragmentStatePagerAdapter
     public Fragment getItem(int i) {
-        if (i == 0 || i == 1 || i == 2 || i == 3) {
+        if (i >= 0 && i < this.mFragments.size()) {
             return this.mFragments.get(i);
         }
         return null;

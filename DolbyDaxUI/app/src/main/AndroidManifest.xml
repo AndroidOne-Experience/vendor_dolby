@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?><manifest xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools">
     <uses-permission android:name="android.permission.BLUETOOTH"/>
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
+    <uses-permission android:name="android.permission.MODIFY_DEFAULT_AUDIO_EFFECTS" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_ROUTING" tools:ignore="ProtectedPermissions" />
+    <uses-permission android:name="android.permission.QUERY_AUDIO_STATE" />
     <uses-permission android:name="com.dolby.permission.DOLBY_UPDATE_BROADCAST"/>
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <!-- Platform-signed system app; these permissions enable the single-user backend. -->

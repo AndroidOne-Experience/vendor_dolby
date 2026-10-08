@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp" android:height="24dp"
+    android:viewportWidth="32" android:viewportHeight="32">
+    <!-- Surrounding sound field, kept open around the shoulders. -->
+    <path android:fillColor="#00000000"
+        android:strokeColor="#FFFFFFFF" android:strokeWidth="1.6"
+        android:strokeLineCap="round"
+        android:pathData="M7,25A13,13 0,1 1,25 25" />
+    <!-- Sound sources around the listener. -->
+    <path android:fillColor="#FFFFFFFF"
+        android:pathData="M16,0.5a2,2 0,1 0,0 4a2,2 0,1 0,0 -4zM6.8,4.3a2,2 0,1 0,0 4a2,2 0,1 0,0 -4zM25.2,4.3a2,2 0,1 0,0 4a2,2 0,1 0,0 -4zM3,13.5a2,2 0,1 0,0 4a2,2 0,1 0,0 -4zM29,13.5a2,2 0,1 0,0 4a2,2 0,1 0,0 -4zM6.8,22.7a2,2 0,1 0,0 4a2,2 0,1 0,0 -4zM25.2,22.7a2,2 0,1 0,0 4a2,2 0,1 0,0 -4z" />
+    <!-- Waves above and beside the head. -->
+    <path android:fillColor="#00000000"
+        android:strokeColor="#FFFFFFFF" android:strokeWidth="1.6"
+        android:strokeLineCap="round"
+        android:pathData="M11.5,7.5Q16,5.3 20.5,7.5M13,10Q16,8.6 19,10M8,11.5Q5.8,16 8,20.5M10.7,13Q9.2,16 10.7,19M24,11.5Q26.2,16 24,20.5M21.3,13Q22.8,16 21.3,19" />
+    <!-- Head and shoulders. -->
+    <path android:fillColor="#FFFFFFFF"
+        android:pathData="M16,11.5a4.5,4.5 0,1 0,0 9a4.5,4.5 0,1 0,0 -9zM9.5,30v-4.2c0,-3.4 2.7,-5.8 6.5,-5.8s6.5,2.4 6.5,5.8V30z" />
+</vector>

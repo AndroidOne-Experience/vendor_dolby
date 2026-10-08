@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <FrameLayout
+        android:id="@+id/profileControls"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <include layout="@layout/profile" />
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/spatialAudioUnavailable"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:padding="24dp"
+        android:text="@string/spatial_audio_bluetooth_required"
+        android:textColor="@color/colorText"
+        android:textSize="16sp"
+        android:visibility="gone" />
+</FrameLayout>

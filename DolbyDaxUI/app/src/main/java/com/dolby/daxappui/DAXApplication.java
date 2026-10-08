@@ -1,5 +1,7 @@
 package com.dolby.daxappui;
 
+import com.dolby.dax.SpatialAudioProfile;
+
 import android.app.Application;
 import android.app.UiModeManager;
 import android.content.Context;
@@ -61,6 +63,9 @@ public class DAXApplication extends Application {
     }
 
     public String[] getProfileNames() {
+        if (SpatialAudioProfile.isSupported()) {
+            return new String[]{getString(R.string.spatial_audio), getString(R.string.dynamic), getString(R.string.movie), getString(R.string.music), getString(R.string.custom)};
+        }
         return new String[]{getString(R.string.dynamic), getString(R.string.movie), getString(R.string.music), getString(R.string.custom)};
     }
 

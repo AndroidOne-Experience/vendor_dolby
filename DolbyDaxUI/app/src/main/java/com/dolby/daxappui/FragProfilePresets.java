@@ -1,5 +1,7 @@
 package com.dolby.daxappui;
 
+import com.dolby.dax.SpatialAudioProfile;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
@@ -17,6 +19,7 @@ public class FragProfilePresets extends Fragment implements AdapterView.OnItemCl
     private boolean mTabletLayout;
     private TabletProfilesAdapter mTabletProfilesAdapter;
     private CustomViewPager mViewPager;
+    private boolean mUpdatingSelection;
     private IDsFragObserver mFObserver = null;
     private ViewPager.OnPageChangeListener pagerListener = new ViewPager.OnPageChangeListener() { // from class: com.dolby.daxappui.FragProfilePresets.1
         @Override // android.support.v4.view.ViewPager.OnPageChangeListener
@@ -29,10 +32,11 @@ public class FragProfilePresets extends Fragment implements AdapterView.OnItemCl
 
         @Override // android.support.v4.view.ViewPager.OnPageChangeListener
         public void onPageSelected(int i) {
-            FragProfilePresets.this.mFObserver.chooseProfile(i);
+            if (mUpdatingSelection) return;
+            FragProfilePresets.this.mFObserver.chooseProfile(SpatialAudioProfile.fromPosition(i));
             // The ViewPager keeps all profile fragments cached. Re-read the newly active
             // engine profile immediately so a previously cached page never shows stale data.
-            FragProfilePresets.this.mFObserver.profileSettingsChanged(i);
+            FragProfilePresets.this.mFObserver.profileSettingsChanged(SpatialAudioProfile.fromPosition(i));
         }
     };
 @Override // android.support.v4.app.Fragment
@@ -76,9 +80,9 @@ public class FragProfilePresets extends Fragment implements AdapterView.OnItemCl
                 this.mProfileAdapter = new FragProfilePanelPageAdapter(getChildFragmentManager());
                 this.mViewPager.setAdapter(this.mProfileAdapter);
                 this.mViewPager.addOnPageChangeListener(this.pagerListener);
-                this.mViewPager.setOffscreenPageLimit(3);
+                this.mViewPager.setOffscreenPageLimit(profileNames.length - 1);
                 tabLayout.setupWithViewPager(this.mViewPager);
-                tabLayout.setTabMode(TabLayout.MODE_FIXED);
+                tabLayout.setTabMode(SpatialAudioProfile.isSupported() ? TabLayout.MODE_SCROLLABLE : TabLayout.MODE_FIXED);
                 tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
                 tabLayout.setSelectedTabIndicatorHeight(0);
                 int[] tabIcons = {
@@ -89,8 +93,9 @@ public class FragProfilePresets extends Fragment implements AdapterView.OnItemCl
                 };
                 for (int i = 0; i < tabLayout.getTabCount(); i++) {
                     TabLayout.Tab tab = tabLayout.getTabAt(i);
-                    if (tab != null && i < tabIcons.length) {
-                        tab.setIcon(tabIcons[i]);
+                    int profile = SpatialAudioProfile.fromPosition(i);
+                    if (tab != null) {
+                        tab.setIcon(profile == SpatialAudioProfile.ID ? R.drawable.ic_spatial_profile : tabIcons[profile]);
                     }
                 }
             }
@@ -99,26 +104,38 @@ public class FragProfilePresets extends Fragment implements AdapterView.OnItemCl
     }
 
     public void updateProfileSettings(int i) {
-        TabLayout.Tab tabAt;
+        if (!SpatialAudioProfile.isVisible(i)) return;
+        int position = SpatialAudioProfile.toPosition(i);
         IDsFragObserver iDsFragObserver = this.mFObserver;
         if ((iDsFragObserver == null ? null : iDsFragObserver.getDolbyAudioEffect()) != null) {
             if (this.mTabletLayout) {
                 TabletProfilesAdapter tabletProfilesAdapter = this.mTabletProfilesAdapter;
                 if (tabletProfilesAdapter != null) {
-                    tabletProfilesAdapter.setProfileSelected(i);
+                    tabletProfilesAdapter.setProfileSelected(position);
                     return;
                 }
                 return;
             }
             if (this.mViewPager != null) {
                 View view = getView();
-                if (view != null && (tabAt = ((TabLayout) view.findViewById(R.id.profiletable)).getTabAt(i)) != null) {
-                    tabAt.select();
+                mUpdatingSelection = true;
+                try {
+                    // Move the page first, without animation, so tab selection cannot
+                    // feed a system-originated update back into chooseProfile().
+                    this.mViewPager.setCurrentItem(position, false);
+                    TabLayout tabs = view == null ? null : (TabLayout) view.findViewById(R.id.profiletable);
+                    if (tabs != null && tabs.getTabAt(position) != null) {
+                        tabs.getTabAt(position).select();
+                        // TabLayout's selected Tab and its child drawable states can
+                        // differ during a ViewPager update. Snap both to this page.
+                        tabs.setScrollPosition(position, 0f, true);
+                    }
+                } finally {
+                    mUpdatingSelection = false;
                 }
-                this.mViewPager.setCurrentItem(i);
                 FragProfilePanelPageAdapter fragProfilePanelPageAdapter = this.mProfileAdapter;
                 if (fragProfilePanelPageAdapter != null) {
-                    ((FragProfilePanel) fragProfilePanelPageAdapter.instantiateItem(this.mViewPager, i)).updateProfilePanel(i);
+                    ((FragProfilePanel) fragProfilePanelPageAdapter.instantiateItem(this.mViewPager, SpatialAudioProfile.toPosition(i))).updateProfilePanel(i);
                     return;
                 }
                 return;
@@ -129,14 +146,14 @@ public class FragProfilePresets extends Fragment implements AdapterView.OnItemCl
     }
 
     public void updateProfileModificationState(int profile) {
-        if (profile < 0 || profile >= 4) {
+        if (!SpatialAudioProfile.isVisible(profile)) {
             return;
         }
         if (this.mTabletLayout) {
             return;
         }
         if (this.mProfileAdapter != null && this.mViewPager != null) {
-            FragProfilePanel panel = (FragProfilePanel) this.mProfileAdapter.instantiateItem(this.mViewPager, profile);
+            FragProfilePanel panel = (FragProfilePanel) this.mProfileAdapter.instantiateItem(this.mViewPager, SpatialAudioProfile.toPosition(profile));
             if (panel != null) {
                 panel.updateResetButtonState(profile);
             }
@@ -146,7 +163,7 @@ public class FragProfilePresets extends Fragment implements AdapterView.OnItemCl
     public void setGeqViewEnabled(int i) {
         FragProfilePanelPageAdapter fragProfilePanelPageAdapter = this.mProfileAdapter;
         if (fragProfilePanelPageAdapter != null) {
-            ((FragProfilePanel) fragProfilePanelPageAdapter.instantiateItem(this.mViewPager, i)).setGeqViewEnabled();
+            ((FragProfilePanel) fragProfilePanelPageAdapter.instantiateItem(this.mViewPager, SpatialAudioProfile.toPosition(i))).setGeqViewEnabled();
         }
     }
 
@@ -155,7 +172,7 @@ public class FragProfilePresets extends Fragment implements AdapterView.OnItemCl
         if (getView() == null || this.mFObserver == null || adapterView != getView().findViewById(R.id.presetsListView)) {
             return;
         }
-        this.mFObserver.chooseProfile(i);
-        this.mFObserver.profileSettingsChanged(i);
+        this.mFObserver.chooseProfile(SpatialAudioProfile.fromPosition(i));
+        this.mFObserver.profileSettingsChanged(SpatialAudioProfile.fromPosition(i));
     }
 }

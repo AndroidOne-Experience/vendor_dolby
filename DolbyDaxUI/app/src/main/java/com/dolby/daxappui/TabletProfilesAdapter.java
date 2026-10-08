@@ -1,5 +1,7 @@
 package com.dolby.daxappui;
 
+import com.dolby.dax.SpatialAudioProfile;
+
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,9 +12,9 @@ import android.widget.TextView;
 
 class TabletProfilesAdapter extends BaseAdapter {
     private final Context mContext;
-    private int mSelectedProfile = 3;
+    private int mSelectedProfile = SpatialAudioProfile.toPosition(3);
     private final String[] mProfileNames = DAXApplication.getInstance().getProfileNames();
-    private final Profile[] mProfiles = new Profile[4];
+    private final Profile[] mProfiles = new Profile[SpatialAudioProfile.count()];
 
     @Override // android.widget.Adapter
     public long getItemId(int i) {
@@ -30,10 +32,12 @@ class TabletProfilesAdapter extends BaseAdapter {
 
     TabletProfilesAdapter(Context context) {
         this.mContext = context;
-        this.mProfiles[0] = new Profile(R.drawable.ic_dynamic_profile_panel, R.drawable.ic_dynamic_unselected_profile_panel);
-        this.mProfiles[1] = new Profile(R.drawable.ic_movie_profile_panel, R.drawable.ic_movie_unselected_profile_panel);
-        this.mProfiles[2] = new Profile(R.drawable.ic_music_profile_panel, R.drawable.ic_music_unselected_profile_panel);
-        this.mProfiles[3] = new Profile(R.drawable.ic_custom_profile_panel, R.drawable.ic_custom_unselected_profile_panel);
+        int offset = SpatialAudioProfile.isSupported() ? 1 : 0;
+        if (offset == 1) this.mProfiles[0] = new Profile(R.drawable.ic_spatial_profile, R.drawable.ic_spatial_profile);
+        this.mProfiles[offset] = new Profile(R.drawable.ic_dynamic_profile_panel, R.drawable.ic_dynamic_unselected_profile_panel);
+        this.mProfiles[offset + 1] = new Profile(R.drawable.ic_movie_profile_panel, R.drawable.ic_movie_unselected_profile_panel);
+        this.mProfiles[offset + 2] = new Profile(R.drawable.ic_music_profile_panel, R.drawable.ic_music_unselected_profile_panel);
+        this.mProfiles[offset + 3] = new Profile(R.drawable.ic_custom_profile_panel, R.drawable.ic_custom_unselected_profile_panel);
     }
 
     @Override // android.widget.Adapter

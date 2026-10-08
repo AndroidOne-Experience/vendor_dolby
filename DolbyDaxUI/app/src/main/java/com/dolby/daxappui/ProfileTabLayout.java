@@ -26,7 +26,8 @@ public class ProfileTabLayout extends TabLayout {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        if (getTabMode() != MODE_FIXED || !(getChildAt(0) instanceof LinearLayout)) return;
+        if (!(getChildAt(0) instanceof LinearLayout)) return;
+        boolean scrollable = getTabMode() == MODE_SCROLLABLE;
         LinearLayout strip = (LinearLayout) getChildAt(0);
         int count = strip.getChildCount();
         if (count == 0) return;
@@ -45,6 +46,7 @@ public class ProfileTabLayout extends TabLayout {
                 if (child instanceof TextView) label = (TextView) child;
             }
             if (icon == null || label == null || icon.getDrawable() == null) return;
+            label.setSingleLine(true);
             Drawable drawable = icon.getDrawable();
             int iconWidth = Math.round(iconHeight * (float) drawable.getIntrinsicWidth()
                     / Math.max(1, drawable.getIntrinsicHeight()));
@@ -60,15 +62,27 @@ public class ProfileTabLayout extends TabLayout {
 
         int availableWidth = getMeasuredWidth() - getPaddingLeft() - getPaddingRight();
         int freeWidth = Math.max(0, availableWidth - totalContentWidth);
+        // Keep the same compact pill and leave 4dp outside it on each side.
+        // Extra profiles extend the strip instead of squeezing the icon + label.
+        int minimumSpacing = Math.round(28 * density);
+        int scrollableSpacing = Math.max(minimumSpacing, freeWidth / count);
         int allocatedWidth = 0;
         for (int i = 0; i < count; i++) {
             View tab = strip.getChildAt(i);
             LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) tab.getLayoutParams();
             // Half of the same free space sits on either side of each centered group.
-            int width = totalContentWidth <= availableWidth
+            int width = scrollable
+                    ? contentWidths[i] + scrollableSpacing
+                    : totalContentWidth <= availableWidth
                     ? contentWidths[i] + freeWidth / count + (i < freeWidth % count ? 1 : 0)
                     : availableWidth / count;
-            if (i == count - 1) width = availableWidth - allocatedWidth;
+            if (scrollable && freeWidth >= minimumSpacing * count && i < freeWidth % count) {
+                width++;
+            }
+            if (!scrollable && i == count - 1) width = availableWidth - allocatedWidth;
+            // TabLayout supplies a default minimum width in scrollable mode.
+            // Our content-based widths already include the desired spacing.
+            tab.setMinimumWidth(0);
             params.width = width;
             params.weight = 0;
             tab.setLayoutParams(params);

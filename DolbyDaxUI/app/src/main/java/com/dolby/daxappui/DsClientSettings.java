@@ -1,5 +1,7 @@
 package com.dolby.daxappui;
 
+import com.dolby.dax.SpatialAudioProfile;
+
 import android.util.Log;
 import com.dolby.dax.DolbyAudioEffect;
 
@@ -270,7 +272,7 @@ public class DsClientSettings {
         if (dolbyAudioEffect == null) {
             return;
         }
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < SpatialAudioProfile.count(); i++) {
             try {
                 if (dolbyAudioEffect.hasControl()) {
                     dolbyAudioEffect.resetProfileSpecificSettings(i);

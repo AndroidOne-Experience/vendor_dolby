@@ -22,7 +22,7 @@ public final class DaxSettingsProvider extends ContentProvider {
     private static final String KEY = "dolby_atmos";
     private static final String SUMMARY = "com.android.settings.summary";
     private static final int[] PROFILE_NAMES = {
-            R.string.dynamic, R.string.movie, R.string.music, R.string.custom
+            R.string.dynamic, R.string.movie, R.string.music, R.string.custom, R.string.spatial_audio
     };
 
     private final BroadcastReceiver updates = new BroadcastReceiver() {

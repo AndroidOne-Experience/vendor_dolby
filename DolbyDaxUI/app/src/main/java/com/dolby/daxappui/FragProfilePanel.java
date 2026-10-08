@@ -1,8 +1,15 @@
 package com.dolby.daxappui;
 
+import com.dolby.dax.SpatialAudioProfile;
+
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.media.AudioDeviceCallback;
+import android.media.AudioDeviceInfo;
+import android.media.AudioManager;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
@@ -25,6 +32,18 @@ import com.dolby.daxappui.EqualizerAdapter;
 
 public class FragProfilePanel extends Fragment implements View.OnClickListener, CompoundButton.OnCheckedChangeListener, EqualizerAdapter.IPresetListener, SeekBar.OnSeekBarChangeListener {
     private Context mContext;
+    private AudioManager mDeviceAudioManager;
+    private final AudioDeviceCallback mAudioDeviceCallback = new AudioDeviceCallback() {
+        @Override
+        public void onAudioDevicesAdded(AudioDeviceInfo[] addedDevices) {
+            updateSpatialAudioAvailability(getView());
+        }
+
+        @Override
+        public void onAudioDevicesRemoved(AudioDeviceInfo[] removedDevices) {
+            updateSpatialAudioAvailability(getView());
+        }
+    };
     private EqualizerAdapter mEqualizerAdapter;
     private String[] mIeqName;
     private FrameLayout mMask;
@@ -163,7 +182,7 @@ public class FragProfilePanel extends Fragment implements View.OnClickListener, 
     public View onCreateView(LayoutInflater layoutInflater, ViewGroup viewGroup, Bundle bundle) {
         int i;
         int i2;
-        View inflate = layoutInflater.inflate(R.layout.profile, (ViewGroup) null);
+        View inflate = layoutInflater.inflate(R.layout.profile_panel, viewGroup, false);
         String substring = this.mProductVersion.substring(0, 4);
         this.mMask = new FrameLayout(getContext());
         this.mMask.setLayoutParams(new FrameLayout.LayoutParams(-1, -1));
@@ -224,7 +243,7 @@ public class FragProfilePanel extends Fragment implements View.OnClickListener, 
             }
         } else {
             RelativeLayout relativeLayout2 = (RelativeLayout) inflate.findViewById(R.id.ieqLayout);
-            if (i3 == 2 || i3 == 3) {
+            if (i3 == 2 || i3 == 3 || i3 == SpatialAudioProfile.ID) {
                 relativeLayout2.setVisibility(0);
                 int ieqPreset2 = DsClientSettings.INSTANCE.getIeqPreset(this.mFObserver);
                 ((TextView) inflate.findViewById(R.id.ieqName)).setText(this.mIeqName[ieqPreset2]);
@@ -323,22 +342,59 @@ public class FragProfilePanel extends Fragment implements View.OnClickListener, 
         updateGeqLockButton(inflate);
 
         this.mvlSwitch = (Switch) inflate.findViewById(R.id.vlButton);
-        this.mvlSwitch.setOnCheckedChangeListener(this);
-        this.mvlSwitch.setChecked(this.mvlState);
+        if (this.mvlSwitch != null) {
+            this.mvlSwitch.setOnCheckedChangeListener(this);
+            this.mvlSwitch.setChecked(this.mvlState);
+        }
         this.mbeSwitch = (Switch) inflate.findViewById(R.id.beButton);
-        this.mbeSwitch.setOnCheckedChangeListener(this);
-        this.mbeSwitch.setChecked(this.mbeState);
+        if (this.mbeSwitch != null) {
+            this.mbeSwitch.setOnCheckedChangeListener(this);
+            this.mbeSwitch.setChecked(this.mbeState);
+        }
         this.msvSwitch = (Switch) inflate.findViewById(R.id.svButton);
-        this.msvSwitch.setOnCheckedChangeListener(this);
         Switch r2 = this.msvSwitch; // Smali: msvSwitch is android.widget.Switch.
-        r2.setChecked(this.msvState);
-        r2.measure(View.MeasureSpec.makeMeasureSpec(0, 0), View.MeasureSpec.makeMeasureSpec(0, 0));
+        if (r2 != null) {
+            r2.setOnCheckedChangeListener(this);
+            r2.setChecked(this.msvState);
+            r2.measure(View.MeasureSpec.makeMeasureSpec(0, 0), View.MeasureSpec.makeMeasureSpec(0, 0));
+        }
         this.mdeSwitch = (Switch) inflate.findViewById(R.id.deButtonSwitch);
         if (this.mdeSwitch != null) {
             this.mdeSwitch.setOnCheckedChangeListener(this);
             this.mdeSwitch.setChecked(this.mdeState);
         }
+        updateSpatialAudioAvailability(inflate);
         return inflate;
+    }
+
+    private void updateSpatialAudioAvailability(View root) {
+        if (root == null) return;
+        boolean unavailable = mNum == SpatialAudioProfile.ID
+                && !SpatialAudioProfile.isBluetoothAudioConnected(getContext());
+        root.findViewById(R.id.profileControls).setVisibility(unavailable ? View.GONE : View.VISIBLE);
+        root.findViewById(R.id.spatialAudioUnavailable).setVisibility(unavailable ? View.VISIBLE : View.GONE);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (SpatialAudioProfile.isSupported()) {
+            mDeviceAudioManager = (AudioManager) getContext().getSystemService(Context.AUDIO_SERVICE);
+            if (mDeviceAudioManager != null) {
+                mDeviceAudioManager.registerAudioDeviceCallback(mAudioDeviceCallback,
+                        new Handler(Looper.getMainLooper()));
+            }
+        }
+        updateSpatialAudioAvailability(getView());
+    }
+
+    @Override
+    public void onStop() {
+        if (mDeviceAudioManager != null) {
+            mDeviceAudioManager.unregisterAudioDeviceCallback(mAudioDeviceCallback);
+            mDeviceAudioManager = null;
+        }
+        super.onStop();
     }
 
     private void updateGeqLockButton(View root) {
@@ -492,9 +548,10 @@ public class FragProfilePanel extends Fragment implements View.OnClickListener, 
     public void updateProfilePanel(int i) {
         this.mNum = i;
         View view = getView();
+        updateSpatialAudioAvailability(view);
         if (view != null) {
             RelativeLayout relativeLayout = (RelativeLayout) view.findViewById(R.id.ieqLayout);
-            if (i == 2 || i == 3) {
+            if (i == 2 || i == 3 || i == SpatialAudioProfile.ID) {
                 relativeLayout.setVisibility(0);
                 int ieqPreset = DsClientSettings.INSTANCE.getIeqPreset(this.mFObserver);
                 ((TextView) view.findViewById(R.id.ieqName)).setText(this.mIeqName[ieqPreset]);
@@ -516,7 +573,7 @@ public class FragProfilePanel extends Fragment implements View.OnClickListener, 
             }
             RelativeLayout relativeLayout2 = (RelativeLayout) view.findViewById(R.id.deView);
             if (this.mProductVersion.substring(0, 4).equals("DAX3")) {
-                if (i == 0 || i == 2) {
+                if (i == 0 || i == 2 || i == SpatialAudioProfile.ID) {
                     relativeLayout2.setVisibility(8);
                 } else {
                     relativeLayout2.setVisibility(0);

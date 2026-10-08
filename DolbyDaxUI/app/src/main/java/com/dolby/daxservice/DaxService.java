@@ -11,6 +11,11 @@ import android.os.IBinder;
 import android.os.IHwBinder;
 import android.util.Log;
 import com.dolby.dax.DolbyAudioEffect;
+import com.dolby.dax.SpatialAudioProfile;
+import android.media.Spatializer;
+import android.media.AudioDeviceCallback;
+import android.media.AudioDeviceInfo;
+import android.media.AudioManager;
 import java.util.ArrayList;
 import vendor.dolby.hardware.dms.V2_0.IDms;
 import vendor.dolby.hardware.dms.V2_0.IDmsCallbacks;
@@ -27,6 +32,30 @@ public final class DaxService extends Service {
     private IDmsCallbacks callbacks;
     private IHwBinder.DeathRecipient deathRecipient;
     private DolbyAudioEffect effect;
+    private Spatializer spatializer;
+    private AudioManager deviceAudioManager;
+    private boolean bluetoothAudioConnected;
+    private final AudioDeviceCallback audioDeviceCallback = new AudioDeviceCallback() {
+        @Override public void onAudioDevicesAdded(AudioDeviceInfo[] devices) {
+            onAudioDevicesChanged();
+        }
+        @Override public void onAudioDevicesRemoved(AudioDeviceInfo[] devices) {
+            onAudioDevicesChanged();
+        }
+    };
+    private final Spatializer.OnSpatializerStateChangedListener spatialListener =
+            new Spatializer.OnSpatializerStateChangedListener() {
+        @Override public void onSpatializerEnabledChanged(Spatializer source, boolean enabled) {
+            if (source != spatializer) return;
+            handler.removeCallbacks(spatialDisabledTask);
+            if (enabled) syncSpatialProfile();
+            // Let output-device removal settle before deciding this was a user switch-off.
+            else handler.postDelayed(spatialDisabledTask, 250);
+        }
+        @Override public void onSpatializerAvailableChanged(Spatializer source, boolean available) {
+            if (source == spatializer && available) syncSpatialProfile();
+        }
+    };
     private int user;
     private volatile int generation;
     private volatile boolean restoring;
@@ -34,6 +63,7 @@ public final class DaxService extends Service {
     private boolean systemReceiverRegistered;
     private boolean reloadReceiverRegistered;
     private final Runnable connectTask = this::connect;
+    private final Runnable spatialDisabledTask = () -> syncSpatialProfile(true);
 
     private final BroadcastReceiver systemReceiver = new BroadcastReceiver() {
         @Override public void onReceive(Context context, Intent intent) {
@@ -136,6 +166,19 @@ public final class DaxService extends Service {
                 }
             };
             dms.registerClient(callbacks, 0, callbacks.hashCode());
+            settings.saveSelection(effect, user);
+            if (SpatialAudioProfile.isSupported()) {
+                spatializer = SpatialAudioProfile.getSpatializer(this);
+                spatializer.addOnSpatializerStateChangedListener(handler::post, spatialListener);
+                deviceAudioManager = getSystemService(AudioManager.class);
+                bluetoothAudioConnected = SpatialAudioProfile.isBluetoothAudioConnected(this);
+                if (deviceAudioManager != null) {
+                    deviceAudioManager.registerAudioDeviceCallback(audioDeviceCallback, handler);
+                }
+                // Adopt an already-enabled system switch before applying the saved profile.
+                if (bluetoothAudioConnected && spatializer.isEnabled()) syncSpatialProfile();
+                else applySpatialProfile();
+            }
             // Initial synchronization after restoration and after every reconnection.
             sendUpdate("profile_change", effect.getProfile());
             sendUpdate("ds_state_change", effect.getDsOn() ? 1 : 0);
@@ -151,12 +194,86 @@ public final class DaxService extends Service {
         if (effect == null) return;
         try {
             if (!"ds_state_change".equals(update.event)
-                    && (update.value < 0 || update.value >= Math.min(4, effect.getNumOfProfiles()))) return;
+                    && (!SpatialAudioProfile.isVisible(update.value)
+                    || update.value >= effect.getNumOfProfiles())) return;
+            if ("profile_change".equals(update.event)) {
+                if (effect.getProfile() != update.value) return;
+                // Profile commands already apply their spatial state at the source.
+                // A delayed HAL echo is a notification, not another user command:
+                // replaying it can undo a newer change made in Bluetooth Settings.
+            }
             settings.save(effect, user, update);
             sendUpdate(update.event, update.value);
         } catch (RuntimeException e) {
             Log.w(TAG, "Cannot process Dolby parameter update", e);
             reconnect();
+        }
+    }
+
+    private void onAudioDevicesChanged() {
+        if (stopped || effect == null || spatializer == null) return;
+        boolean connected = SpatialAudioProfile.isBluetoothAudioConnected(this);
+        if (connected == bluetoothAudioConnected) return;
+        bluetoothAudioConnected = connected;
+        applySpatialProfile();
+    }
+
+    private void applySpatialProfile() {
+        if (stopped || effect == null || spatializer == null) return;
+        try {
+            SpatialAudioProfile.apply(this, effect.getProfile());
+        } catch (RuntimeException e) {
+            Log.w(TAG, "Cannot apply Spatial Audio connection state", e);
+        }
+    }
+
+    private void syncSpatialProfile() {
+        syncSpatialProfile(false);
+    }
+
+    private void syncSpatialProfile(boolean restoreOnDisable) {
+        if (stopped || effect == null || spatializer == null) return;
+        try {
+            // Losing Bluetooth can turn the system switch off. Keep the user's profile
+            // so the device callback can re-enable spatialization on reconnection.
+            if (!SpatialAudioProfile.isBluetoothAudioConnected(this)) {
+                if (spatializer.isEnabled()) applySpatialProfile();
+                return;
+            }
+            boolean enabled = spatializer.isEnabled();
+            int current = effect.getProfile();
+            // Route loss (including a temporary call route) is not a user switch-off.
+            if (!enabled && (!restoreOnDisable || !spatializer.isAvailable()
+                    || current != SpatialAudioProfile.ID)) return;
+            int target = enabled ? SpatialAudioProfile.ID
+                    : settings.lastNonSpatialProfile(user, effect.getNumOfProfiles());
+            if (current == target && (!enabled || effect.getDsOn())) return;
+            // The observer handle has low priority; take control only for this transition.
+            DolbyAudioEffect control = new DolbyAudioEffect(1, 0);
+            try {
+                if (!control.hasControl()) {
+                    Log.w(TAG, "Cannot synchronize Spatial Audio: Dolby control unavailable");
+                    return;
+                }
+                // Capture the source profile before a system-originated transition.
+                settings.saveSelection(control, user);
+                if (enabled && !control.getDsOn()) control.setDsOn(true);
+                if (control.getProfile() != target) {
+                    control.setProfile(target);
+                }
+                if ((enabled && !control.getDsOn()) || control.getProfile() != target) {
+                    Log.w(TAG, "Dolby did not accept the system Spatial Audio selection");
+                    return;
+                }
+                // Do not rely on the vendor HAL echoing writes to its callback client.
+                settings.saveSelection(control, user);
+                sendUpdate("ds_state_change", control.getDsOn() ? 1 : 0);
+                sendUpdate("profile_change", target);
+            } finally {
+                control.release();
+            }
+        } catch (RuntimeException e) {
+            Log.w(TAG, "Cannot synchronize Spatial Audio profile", e);
         }
     }
 
@@ -179,6 +296,16 @@ public final class DaxService extends Service {
     }
 
     private void disconnect() {
+        handler.removeCallbacks(spatialDisabledTask);
+        if (deviceAudioManager != null) {
+            deviceAudioManager.unregisterAudioDeviceCallback(audioDeviceCallback);
+            deviceAudioManager = null;
+        }
+        if (spatializer != null) {
+            try { spatializer.removeOnSpatializerStateChangedListener(spatialListener); }
+            catch (RuntimeException e) { Log.d(TAG, "Spatializer listener already disconnected"); }
+            spatializer = null;
+        }
         if (dms != null) {
             try {
                 if (callbacks != null) dms.unregisterClient(callbacks, 0, callbacks.hashCode());

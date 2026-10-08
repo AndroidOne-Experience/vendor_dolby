@@ -1,5 +1,7 @@
 package com.dolby.daxappui;
 
+import com.dolby.dax.SpatialAudioProfile;
+
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.DashPathEffect;
@@ -143,7 +145,7 @@ public GeqView(Context context, AttributeSet attributeSet) {
     }
 
     public void setInteractionProfile(int profile) {
-        if (profile >= 0 && profile < 4) {
+        if (SpatialAudioProfile.isVisible(profile)) {
             mInteractionProfile = profile;
         }
         if (isInteractionLocked()) {
@@ -177,7 +179,7 @@ public GeqView(Context context, AttributeSet attributeSet) {
                 .getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
                 .edit()
                 .remove(PREF_EQ_GRAPH_LOCKED);
-        for (int profile = 0; profile < 4; profile++) {
+        for (int profile = 0; profile < SpatialAudioProfile.count(); profile++) {
             editor.remove(PREF_EQ_GRAPH_LOCKED_PROFILE + profile);
         }
         editor.apply();
