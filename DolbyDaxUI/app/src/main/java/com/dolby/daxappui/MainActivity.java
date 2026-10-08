@@ -18,7 +18,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.NavigationView;
 import android.support.v4.content.ContextCompat;
-import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.MenuItemCompat;
@@ -259,7 +258,6 @@ public void profileSettingsChanged(int i) {
         FragProfilePresets fragProfilePresets = (FragProfilePresets) fragMainContent.getChildFragmentManager().findFragmentById(R.id.fragProfilePanel);
         if (fragProfilePresets != null) {
             fragProfilePresets.updateProfileSettings(i);
-            refreshCurrentProfileTabVisualState((TabLayout) findViewById(R.id.profiletable));
         }
         if (!this.mTabletLayout || (fragProfilePanel = (FragProfilePanel) fragMainContent.getChildFragmentManager().findFragmentById(R.id.fragProfilePanelTablet)) == null) {
             return;
@@ -856,7 +854,7 @@ public int getActiveDevices() {
         FragMainContent fragMainContent;
         FragMainContent fragMainContent2;
         ViewGroup viewGroup;
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.profiletable);
+        ProfileTabLayout tabLayout = (ProfileTabLayout) findViewById(R.id.profiletable);
         ViewPager viewPager = (ViewPager) findViewById(R.id.profileViewpager);
         ListView listView = (ListView) findViewById(R.id.presetsListView);
         ImageView imageView = (ImageView) findViewById(R.id.powerButtonOn);
@@ -878,44 +876,18 @@ public int getActiveDevices() {
                 supportActionBar.setHomeButtonEnabled(true);
             }
             if (tabLayout != null) {
-                LinearLayout linearLayout = (LinearLayout) tabLayout.getChildAt(0);
                 tabLayout.setBackgroundColor(getResources().getColor(R.color.colorTitleBar, getTheme()));
-                linearLayout.setEnabled(true);
-                for (int i = 0; i < linearLayout.getChildCount(); i++) {
-                    linearLayout.getChildAt(i).setClickable(true);
-                }
-                tabLayout.setTabTextColors(getResources().getColor(R.color.colorProfileTextOff, getTheme()), getResources().getColor(R.color.colorSelectedTabText, getTheme()));
-                tabLayout.setTabIconTint(ContextCompat.getColorStateList(this, R.color.profile_tab_icon_tint_on));
-                tabLayout.setSelectedTabIndicatorHeight(0);
-
-                // Support TabLayout can keep a stale icon drawable state after the
-                // Dolby-off tint list is replaced. Re-sync the visual selection to
-                // the profile that is actually active in the Dolby engine.
-                int activeProfile = tabLayout.getSelectedTabPosition();
+                tabLayout.setDolbyEnabled(true);
                 if (this.mDolbyAudio != null) {
                     try {
-                        int engineProfile = this.mDolbyAudio.getProfile();
-                        if (SpatialAudioProfile.isVisible(engineProfile)) {
-                            activeProfile = SpatialAudioProfile.toPosition(engineProfile);
+                        int profile = this.mDolbyAudio.getProfile();
+                        if (SpatialAudioProfile.isVisible(profile)) {
+                            profileSettingsChanged(profile);
                         }
                     } catch (RuntimeException e) {
-                        Log.w("MainActivity", "Unable to read active profile while refreshing tabs", e);
+                        Log.w("MainActivity", "Unable to refresh profile selection", e);
                     }
                 }
-                final int profileToRefresh = activeProfile;
-                if (profileToRefresh >= 0 && profileToRefresh < tabLayout.getTabCount()) {
-                    TabLayout.Tab activeTab = tabLayout.getTabAt(profileToRefresh);
-                    if (activeTab != null && tabLayout.getSelectedTabPosition() != profileToRefresh) {
-                        profileSettingsChanged(SpatialAudioProfile.fromPosition(profileToRefresh));
-                    }
-                }
-                refreshProfileTabVisualState(tabLayout, profileToRefresh, true);
-                tabLayout.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        refreshCurrentProfileTabVisualState(tabLayout);
-                    }
-                });
             }
             if (viewPager != null) {
                 viewPager.setVisibility(0);
@@ -953,25 +925,7 @@ public int getActiveDevices() {
         }
         if (tabLayout != null) {
             tabLayout.setBackgroundColor(getResources().getColor(R.color.colorMainBackground, getTheme()));
-            LinearLayout linearLayout2 = (LinearLayout) tabLayout.getChildAt(0);
-            linearLayout2.setEnabled(false);
-            for (int i2 = 0; i2 < linearLayout2.getChildCount(); i2++) {
-                linearLayout2.getChildAt(i2).setClickable(false);
-            }
-            tabLayout.setTabTextColors(getResources().getColor(R.color.colorProfileTextOff, getTheme()), getResources().getColor(R.color.colorProfileTextOff, getTheme()));
-            tabLayout.setTabIconTint(ContextCompat.getColorStateList(this, R.color.profile_tab_icon_tint_off));
-            tabLayout.setSelectedTabIndicatorHeight(0);
-            // Clear any cached selected drawable state while Dolby is disabled.
-            refreshProfileTabVisualState(tabLayout, -1, false);
-            // TabLayout can restore its internally selected child during a pending
-            // layout pass (notably on a cold app launch). Clear it once more after
-            // layout so the remembered engine profile never leaves a stale pill.
-            tabLayout.post(new Runnable() {
-                @Override
-                public void run() {
-                    refreshCurrentProfileTabVisualState(tabLayout);
-                }
-            });
+            tabLayout.setDolbyEnabled(false);
         }
         ActionBar supportActionBar2 = getSupportActionBar();
         if (supportActionBar2 != null) {
@@ -996,47 +950,6 @@ public int getActiveDevices() {
         }
         imageView.setImageDrawable(getResources().getDrawable(R.drawable.btn_power_off_titlebar, getTheme()));
     }
-
-    /** Deferred refreshes must use current state, never a previously captured profile. */
-    private void refreshCurrentProfileTabVisualState(TabLayout tabLayout) {
-        if (tabLayout == null || tabLayout.getChildCount() == 0) return;
-        boolean enabled = tabLayout.getChildAt(0).isEnabled();
-        refreshProfileTabVisualState(tabLayout, tabLayout.getSelectedTabPosition(), enabled);
-    }
-
-    /**
-     * Keeps the profile tab text/icon drawable state in sync with the Dolby engine.
-     * Support Design 28 TabLayout may retain a stale icon tint when its tint list is
-     * changed while the tab strip is disabled, so each child state is refreshed.
-     */
-    private void refreshProfileTabVisualState(TabLayout tabLayout, int selectedProfile, boolean dolbyEnabled) {
-        if (tabLayout == null || tabLayout.getChildCount() == 0 || !(tabLayout.getChildAt(0) instanceof LinearLayout)) {
-            return;
-        }
-        LinearLayout strip = (LinearLayout) tabLayout.getChildAt(0);
-        for (int i = 0; i < strip.getChildCount(); i++) {
-            View tabView = strip.getChildAt(i);
-            boolean selected = dolbyEnabled && i == selectedProfile;
-            tabView.setSelected(selected);
-            tabView.refreshDrawableState();
-
-            if (tabView instanceof ViewGroup) {
-                ViewGroup group = (ViewGroup) tabView;
-                for (int j = 0; j < group.getChildCount(); j++) {
-                    View child = group.getChildAt(j);
-                    child.setSelected(selected);
-                    child.refreshDrawableState();
-                    child.jumpDrawablesToCurrentState();
-                    child.invalidate();
-                }
-            }
-            tabView.jumpDrawablesToCurrentState();
-            tabView.invalidate();
-        }
-        tabLayout.refreshDrawableState();
-        tabLayout.invalidate();
-    }
-
 
     @Override
     public void profileModificationChanged(int profile) {

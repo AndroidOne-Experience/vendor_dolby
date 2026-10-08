@@ -14,6 +14,7 @@ android_app {
     static_libs: [
         "android-support-v7-appcompat",
         "android-support-design",
+        "android-support-v7-recyclerview",
         "android-support-v17-leanback",
     ],
 

@@ -5,9 +5,7 @@ import com.dolby.dax.SpatialAudioProfile;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,26 +17,7 @@ public class FragProfilePresets extends Fragment implements AdapterView.OnItemCl
     private boolean mTabletLayout;
     private TabletProfilesAdapter mTabletProfilesAdapter;
     private CustomViewPager mViewPager;
-    private boolean mUpdatingSelection;
     private IDsFragObserver mFObserver = null;
-    private ViewPager.OnPageChangeListener pagerListener = new ViewPager.OnPageChangeListener() { // from class: com.dolby.daxappui.FragProfilePresets.1
-        @Override // android.support.v4.view.ViewPager.OnPageChangeListener
-        public void onPageScrollStateChanged(int i) {
-        }
-
-        @Override // android.support.v4.view.ViewPager.OnPageChangeListener
-        public void onPageScrolled(int i, float f, int i2) {
-        }
-
-        @Override // android.support.v4.view.ViewPager.OnPageChangeListener
-        public void onPageSelected(int i) {
-            if (mUpdatingSelection) return;
-            FragProfilePresets.this.mFObserver.chooseProfile(SpatialAudioProfile.fromPosition(i));
-            // The ViewPager keeps all profile fragments cached. Re-read the newly active
-            // engine profile immediately so a previously cached page never shows stale data.
-            FragProfilePresets.this.mFObserver.profileSettingsChanged(SpatialAudioProfile.fromPosition(i));
-        }
-    };
 @Override // android.support.v4.app.Fragment
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -68,37 +47,27 @@ public class FragProfilePresets extends Fragment implements AdapterView.OnItemCl
                 adapterView.setOnItemClickListener(this);
             }
         } else {
-            TabLayout tabLayout = (TabLayout) inflate.findViewById(R.id.profiletable);
-            for (String str : profileNames) {
-                TabLayout.Tab newTab = tabLayout.newTab();
-                newTab.setText(str);
-                tabLayout.addTab(newTab);
+            ProfileTabLayout tabs = (ProfileTabLayout) inflate.findViewById(R.id.profiletable);
+            this.mViewPager = (CustomViewPager) inflate.findViewById(R.id.profileViewpager);
+            this.mViewPager.setPagingEnabled(false);
+            this.mProfileAdapter = new FragProfilePanelPageAdapter(getChildFragmentManager());
+            this.mViewPager.setAdapter(this.mProfileAdapter);
+            this.mViewPager.setOffscreenPageLimit(profileNames.length - 1);
+            int[] profileIcons = {
+                R.drawable.ic_dynamic_profile_panel, R.drawable.ic_movie_profile_panel,
+                R.drawable.ic_music_profile_panel, R.drawable.ic_custom_profile_panel
+            };
+            int[] icons = new int[profileNames.length];
+            for (int position = 0; position < icons.length; position++) {
+                int profile = SpatialAudioProfile.fromPosition(position);
+                icons[position] = profile == SpatialAudioProfile.ID
+                        ? R.drawable.ic_spatial_profile : profileIcons[profile];
             }
-            if (tabLayout != null) {
-                this.mViewPager = (CustomViewPager) inflate.findViewById(R.id.profileViewpager);
-                this.mViewPager.setPagingEnabled(false);
-                this.mProfileAdapter = new FragProfilePanelPageAdapter(getChildFragmentManager());
-                this.mViewPager.setAdapter(this.mProfileAdapter);
-                this.mViewPager.addOnPageChangeListener(this.pagerListener);
-                this.mViewPager.setOffscreenPageLimit(profileNames.length - 1);
-                tabLayout.setupWithViewPager(this.mViewPager);
-                tabLayout.setTabMode(SpatialAudioProfile.isSupported() ? TabLayout.MODE_SCROLLABLE : TabLayout.MODE_FIXED);
-                tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
-                tabLayout.setSelectedTabIndicatorHeight(0);
-                int[] tabIcons = {
-                    R.drawable.ic_dynamic_profile_panel,
-                    R.drawable.ic_movie_profile_panel,
-                    R.drawable.ic_music_profile_panel,
-                    R.drawable.ic_custom_profile_panel
-                };
-                for (int i = 0; i < tabLayout.getTabCount(); i++) {
-                    TabLayout.Tab tab = tabLayout.getTabAt(i);
-                    int profile = SpatialAudioProfile.fromPosition(i);
-                    if (tab != null) {
-                        tab.setIcon(profile == SpatialAudioProfile.ID ? R.drawable.ic_spatial_profile : tabIcons[profile]);
-                    }
-                }
-            }
+            tabs.setProfiles(profileNames, icons, position -> {
+                int profile = SpatialAudioProfile.fromPosition(position);
+                mFObserver.chooseProfile(profile);
+                mFObserver.profileSettingsChanged(profile);
+            });
         }
         return inflate;
     }
@@ -118,21 +87,10 @@ public class FragProfilePresets extends Fragment implements AdapterView.OnItemCl
             }
             if (this.mViewPager != null) {
                 View view = getView();
-                mUpdatingSelection = true;
-                try {
-                    // Move the page first, without animation, so tab selection cannot
-                    // feed a system-originated update back into chooseProfile().
-                    this.mViewPager.setCurrentItem(position, false);
-                    TabLayout tabs = view == null ? null : (TabLayout) view.findViewById(R.id.profiletable);
-                    if (tabs != null && tabs.getTabAt(position) != null) {
-                        tabs.getTabAt(position).select();
-                        // TabLayout's selected Tab and its child drawable states can
-                        // differ during a ViewPager update. Snap both to this page.
-                        tabs.setScrollPosition(position, 0f, true);
-                    }
-                } finally {
-                    mUpdatingSelection = false;
-                }
+                this.mViewPager.setCurrentItem(position, false);
+                ProfileTabLayout tabs = view == null ? null
+                        : (ProfileTabLayout) view.findViewById(R.id.profiletable);
+                if (tabs != null) tabs.setSelectedProfilePosition(position);
                 FragProfilePanelPageAdapter fragProfilePanelPageAdapter = this.mProfileAdapter;
                 if (fragProfilePanelPageAdapter != null) {
                     ((FragProfilePanel) fragProfilePanelPageAdapter.instantiateItem(this.mViewPager, SpatialAudioProfile.toPosition(i))).updateProfilePanel(i);
