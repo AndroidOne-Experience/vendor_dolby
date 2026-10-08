@@ -133,19 +133,6 @@ public class DsClientSettings {
         }
     }
 
-    void setBassEnhancerOn(IDsFragObserver iDsFragObserver, boolean z) {
-        if (iDsFragObserver == null) return;
-        DolbyAudioEffect dolbyAudioEffect = iDsFragObserver.getDolbyAudioEffect();
-        if (dolbyAudioEffect == null) {
-            return;
-        }
-        try {
-            dolbyAudioEffect.setBassEnhancerEnabled(z);
-        } catch (Exception e) {
-            Log.e(TAG, "Error in setBassEnhancerOn", e);
-        }
-    }
-
     void setVolumeLevelerOn(IDsFragObserver iDsFragObserver, boolean z) {
         if (iDsFragObserver == null) return;
         DolbyAudioEffect dolbyAudioEffect = iDsFragObserver.getDolbyAudioEffect();
@@ -179,20 +166,6 @@ public class DsClientSettings {
             }
         } catch (Exception e) {
             Log.e(TAG, "Error in setIeqPreset", e);
-        }
-    }
-
-    boolean getBassEnhancerOn(IDsFragObserver iDsFragObserver) {
-        if (iDsFragObserver == null) return false;
-        DolbyAudioEffect dolbyAudioEffect = iDsFragObserver.getDolbyAudioEffect();
-        if (dolbyAudioEffect == null) {
-            return false;
-        }
-        try {
-            return dolbyAudioEffect.getBassEnhancerEnabled();
-        } catch (Exception e) {
-            Log.e(TAG, "Error in getBassEnhancerOn", e);
-            return false;
         }
     }
 

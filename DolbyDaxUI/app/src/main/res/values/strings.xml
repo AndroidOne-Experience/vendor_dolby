@@ -48,11 +48,9 @@
     <string name="reset_continue">Continue</string>
     <string name="hide_launcher_icon" translatable="false">Hide Launcher Icon</string>
     <string name="warm">Warm</string>
-    <string name="bass_enhancer">Bass Enhancer</string>
     <string name="volume_leveler">Volume Leveler</string>
     <string name="surround_virtualizer">Surround Virtualizer</string>
     <string name="volume_leveler_summary" translatable="false">Hear the same volume level for each audio source</string>
-    <string name="bass_enhancer_summary" translatable="false">Enhance low frequencies to produce deeper, richer bass</string>
     <string name="surround_virtualizer_summary" translatable="false">Create a surround sound experience through your connected device</string>
     <string name="dolby_settings_summary">Rich cinematic sound that surrounds you</string>
     <string name="dolby_settings_unavailable">Dolby Atmos is temporarily unavailable. Try again.</string>

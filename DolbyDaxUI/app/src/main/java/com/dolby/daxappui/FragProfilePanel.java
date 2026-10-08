@@ -48,13 +48,11 @@ public class FragProfilePanel extends Fragment implements View.OnClickListener, 
     private String[] mIeqName;
     private FrameLayout mMask;
     private String mProductVersion;
-    private Switch mbeSwitch;
     private Switch mdeSwitch;
     private Switch msvSwitch;
     private Switch mvlSwitch;
     public int mNum = -1;
     private IDsFragObserver mFObserver = null;
-    private boolean mbeState = false;
     private boolean mdeState = false;
     private boolean mvlState = false;
     private boolean msvState = false;
@@ -143,7 +141,6 @@ public class FragProfilePanel extends Fragment implements View.OnClickListener, 
         super.onAttach(context);
         try {
             this.mFObserver = (IDsFragObserver) context;
-            this.mbeState = DsClientSettings.INSTANCE.getBassEnhancerOn(this.mFObserver);
             this.mvlState = DsClientSettings.INSTANCE.getVolumeLevelerOn(this.mFObserver);
             this.msvState = DsClientSettings.INSTANCE.getSpeakerVirtualizerOn(this.mFObserver);
             this.mProductVersion = DAXApplication.getInstance().getProductVersion();
@@ -153,11 +150,8 @@ public class FragProfilePanel extends Fragment implements View.OnClickListener, 
             this.mIeqName[2] = context.getString(R.string.warm);
             this.mIeqName[3] = context.getString(R.string.no_effect);
             this.mContext = context;
-            if (this.mbeSwitch != null) {
-                this.mbeSwitch.setChecked(this.mbeState);
-                this.mvlSwitch.setChecked(this.mvlState);
-                this.msvSwitch.setChecked(this.msvState);
-            }
+            if (this.mvlSwitch != null) this.mvlSwitch.setChecked(this.mvlState);
+            if (this.msvSwitch != null) this.msvSwitch.setChecked(this.msvState);
             SharedPreferences sharedPreferences = this.mContext.getSharedPreferences("dax_dea_default", 0);
             SharedPreferences.Editor edit = sharedPreferences.edit();
             if (sharedPreferences.getBoolean("firstrun", true)) {
@@ -346,11 +340,6 @@ public class FragProfilePanel extends Fragment implements View.OnClickListener, 
             this.mvlSwitch.setOnCheckedChangeListener(this);
             this.mvlSwitch.setChecked(this.mvlState);
         }
-        this.mbeSwitch = (Switch) inflate.findViewById(R.id.beButton);
-        if (this.mbeSwitch != null) {
-            this.mbeSwitch.setOnCheckedChangeListener(this);
-            this.mbeSwitch.setChecked(this.mbeState);
-        }
         this.msvSwitch = (Switch) inflate.findViewById(R.id.svButton);
         Switch r2 = this.msvSwitch; // Smali: msvSwitch is android.widget.Switch.
         if (r2 != null) {
@@ -428,7 +417,6 @@ public class FragProfilePanel extends Fragment implements View.OnClickListener, 
 
         int[] protectedSwitchIds = {
                 R.id.vlButton,
-                R.id.beButton,
                 R.id.svButton,
                 R.id.deButtonSwitch
         };
@@ -610,24 +598,19 @@ public class FragProfilePanel extends Fragment implements View.OnClickListener, 
             updateGeqLockButton(view);
             updateResetButtonState(i);
             if (this.mFObserver != null) {
-                this.mbeState = DsClientSettings.INSTANCE.getBassEnhancerOn(this.mFObserver);
-                if (this.mbeSwitch != null) {
-                    this.mbeSwitch.setChecked(this.mbeState);
-                    this.mbeSwitch.invalidate();
-                    this.mvlState = DsClientSettings.INSTANCE.getVolumeLevelerOn(this.mFObserver);
-                    if (this.mvlSwitch != null) {
-                        this.mvlSwitch.setChecked(this.mvlState);
-                        this.mvlSwitch.invalidate();
-                        this.msvState = DsClientSettings.INSTANCE.getSpeakerVirtualizerOn(this.mFObserver);
-                        if (this.msvSwitch != null) {
-                            this.msvSwitch.setChecked(this.msvState);
-                            this.msvSwitch.invalidate();
-                        }
-                        if (this.mdeSwitch != null) {
-                            this.mdeSwitch.setChecked(this.mdeState);
-                            this.mdeSwitch.invalidate();
-                        }
-                    }
+                this.mvlState = DsClientSettings.INSTANCE.getVolumeLevelerOn(this.mFObserver);
+                if (this.mvlSwitch != null) {
+                    this.mvlSwitch.setChecked(this.mvlState);
+                    this.mvlSwitch.invalidate();
+                }
+                this.msvState = DsClientSettings.INSTANCE.getSpeakerVirtualizerOn(this.mFObserver);
+                if (this.msvSwitch != null) {
+                    this.msvSwitch.setChecked(this.msvState);
+                    this.msvSwitch.invalidate();
+                }
+                if (this.mdeSwitch != null) {
+                    this.mdeSwitch.setChecked(this.mdeState);
+                    this.mdeSwitch.invalidate();
                 }
             }
             setGeqViewEnabled();
@@ -640,7 +623,7 @@ public class FragProfilePanel extends Fragment implements View.OnClickListener, 
             return;
         }
         int id = compoundButton.getId();
-        if ((id == R.id.deButtonSwitch || id == R.id.beButton || id == R.id.vlButton || id == R.id.svButton)
+        if ((id == R.id.deButtonSwitch || id == R.id.vlButton || id == R.id.svButton)
                 && isProfileInteractionLocked()) {
             return;
         }
@@ -666,21 +649,16 @@ public class FragProfilePanel extends Fragment implements View.OnClickListener, 
                         }
                     }
                 }
-            } else if (id != R.id.beButton) {
-                if (id != R.id.vlButton) {
-                    if (id == R.id.svButton) {
-                        if (z != dsClientSettings.getSpeakerVirtualizerOn(this.mFObserver)) {
-                            dsClientSettings.setSpeakerVirtualizerOn(this.mFObserver, z);
-                            changed = true;
-                        }
-                    }
-                } else if (z != dsClientSettings.getVolumeLevelerOn(this.mFObserver)) {
+            } else if (id == R.id.vlButton) {
+                if (z != dsClientSettings.getVolumeLevelerOn(this.mFObserver)) {
                     dsClientSettings.setVolumeLevelerOn(this.mFObserver, z);
                     changed = true;
                 }
-            } else if (z != dsClientSettings.getBassEnhancerOn(this.mFObserver)) {
-                dsClientSettings.setBassEnhancerOn(this.mFObserver, z);
-                changed = true;
+            } else if (id == R.id.svButton) {
+                if (z != dsClientSettings.getSpeakerVirtualizerOn(this.mFObserver)) {
+                    dsClientSettings.setSpeakerVirtualizerOn(this.mFObserver, z);
+                    changed = true;
+                }
             }
             if (changed && this.mFObserver != null) {
                 this.mFObserver.profileModificationChanged(this.mNum);

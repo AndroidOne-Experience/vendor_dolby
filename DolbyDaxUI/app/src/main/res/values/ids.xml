@@ -62,9 +62,6 @@
     <item type="id" name="vlView" />
     <item type="id" name="vlText" />
     <item type="id" name="vlButton" />
-    <item type="id" name="beView" />
-    <item type="id" name="beText" />
-    <item type="id" name="beButton" />
     <item type="id" name="svView" />
     <item type="id" name="svText" />
     <item type="id" name="svButton" />
