@@ -8,5 +8,6 @@
         <permission name="android.permission.SUBSTITUTE_NOTIFICATION_APP_NAME"/>
         <permission name="android.permission.MODIFY_DEFAULT_AUDIO_EFFECTS"/>
         <permission name="android.permission.QUERY_AUDIO_STATE" />
+        <permission name="android.permission.MODIFY_AUDIO_ROUTING"/>
     </privapp-permissions>
 </permissions>

@@ -2,6 +2,7 @@ package com.dolby.dax;
 
 import android.content.Context;
 import android.media.AudioManager;
+import android.media.AudioAttributes;
 import android.media.AudioDeviceInfo;
 import android.media.Spatializer;
 import android.os.Build;
@@ -9,6 +10,7 @@ import android.os.SystemProperties;
 import android.util.Log;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.List;
 
 /** Native profile IDs remain independent of the order of the visible tabs. */
 public final class SpatialAudioProfile {
@@ -32,6 +34,54 @@ public final class SpatialAudioProfile {
 
     public static Spatializer getSpatializer(Context context) {
         return context.getSystemService(AudioManager.class).getSpatializer();
+    }
+
+    /** Startup must inspect the media route, not merely a connected/idle Bluetooth device. */
+    public static boolean isEnabledForActiveBluetoothDevice(Context context) {
+        if (context == null || !isSupported()) return false;
+        try {
+            AudioManager manager = context.getSystemService(AudioManager.class);
+            if (manager == null) return false;
+            Spatializer spatializer = manager.getSpatializer();
+            if (spatializer == null || !spatializer.isEnabled()) return false;
+            AudioAttributes media = new AudioAttributes.Builder()
+                    .setUsage(AudioAttributes.USAGE_MEDIA).build();
+            List<?> routes;
+            try {
+                routes = (List<?>) AudioManager.class.getMethod("getAudioDevicesForAttributes",
+                        AudioAttributes.class).invoke(manager, media);
+            } catch (NoSuchMethodException e) {
+                routes = (List<?>) AudioManager.class.getMethod("getDevicesForAttributes",
+                        AudioAttributes.class).invoke(manager, media);
+            }
+            List<?> enabledDevices = (List<?>) Spatializer.class
+                    .getMethod("getCompatibleAudioDevices").invoke(spatializer);
+            if (routes == null || enabledDevices == null) return false;
+            for (Object route : routes) {
+                int type = deviceType(route);
+                if (!isBluetoothDeviceType(type)) continue;
+                String address = deviceAddress(route);
+                for (Object enabled : enabledDevices) {
+                    if (type == deviceType(enabled) && address.equals(deviceAddress(enabled))) {
+                        return true;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            Log.w("SpatialAudioProfile", "Cannot query active Bluetooth spatial audio state", unwrap(e));
+        }
+        return false;
+    }
+
+    private static int deviceType(Object device) throws ReflectiveOperationException {
+        if (device instanceof AudioDeviceInfo) return ((AudioDeviceInfo) device).getType();
+        return (Integer) device.getClass().getMethod("getType").invoke(device);
+    }
+
+    private static String deviceAddress(Object device) throws ReflectiveOperationException {
+        String address = device instanceof AudioDeviceInfo ? ((AudioDeviceInfo) device).getAddress()
+                : (String) device.getClass().getMethod("getAddress").invoke(device);
+        return address == null ? "" : address;
     }
 
     /** Checks connected audio outputs, rather than merely paired Bluetooth devices. */

@@ -29,9 +29,17 @@
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
+        <activity
+            android:name=".LauncherActivity"
+            android:directBootAware="false"
+            android:exported="false"
+            android:excludeFromRecents="true"
+            android:noHistory="true"
+            android:taskAffinity=""
+            android:theme="@android:style/Theme.NoDisplay" />
         <activity-alias
             android:name=".MainActivityLauncherAlias"
-            android:targetActivity=".MainActivity"
+            android:targetActivity=".LauncherActivity"
             android:label="@string/launcher_app_name"
             android:icon="@mipmap/ic_launcher"
             android:roundIcon="@mipmap/ic_launcher_round"

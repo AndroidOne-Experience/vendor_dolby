@@ -28,6 +28,18 @@ final class DaxSettings {
 
     void remove(int user) { storage.deleteSharedPreferences("dax_user_" + user); }
 
+    boolean hasSavedProfile(int user) { return prefs(user).contains("profile"); }
+
+    void initializeSelection(DolbyAudioEffect effect, int user, int profile) {
+        boolean power = profile == SpatialAudioProfile.ID || effect.getDsOn();
+        // Save the intended selection before applying it so a backend retry restores
+        // the same first-run choice rather than the native engine's initial profile.
+        prefs(user).edit().putInt("profile", profile).putBoolean("power", power)
+                .putInt("last_non_spatial_profile", 0).apply();
+        if (power != effect.getDsOn()) effect.setDsOn(power);
+        if (effect.getProfile() != profile) effect.setProfile(profile);
+    }
+
     /** Returns true when native state was captured and must not be replayed. */
     boolean initialize(DolbyAudioEffect effect, int user) {
         SharedPreferences defaults = prefs(-1);

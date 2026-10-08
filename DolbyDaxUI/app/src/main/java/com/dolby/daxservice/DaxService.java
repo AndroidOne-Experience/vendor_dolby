@@ -144,9 +144,16 @@ public final class DaxService extends Service {
             try {
                 control = new DolbyAudioEffect(1, 0);
                 if (!control.hasControl()) throw new IllegalStateException("Cannot restore Dolby settings");
+                boolean firstStart = !settings.hasSavedProfile(user);
+                int initialProfile = firstStart
+                        && control.getNumOfProfiles() > SpatialAudioProfile.ID
+                        && SpatialAudioProfile.isEnabledForActiveBluetoothDevice(this)
+                        ? SpatialAudioProfile.ID : 0;
                 // The OEM service only captures native defaults on first run. Replaying
                 // every queried value while SWDAP is coming up can crash the vendor HAL.
-                if (!settings.initialize(control, user)) settings.restore(control, user);
+                boolean capturedNativeDefaults = settings.initialize(control, user);
+                if (firstStart) settings.initializeSelection(control, user, initialProfile);
+                else if (!capturedNativeDefaults) settings.restore(control, user);
             } finally {
                 if (control != null) control.release();
                 restoring = false;
@@ -176,7 +183,7 @@ public final class DaxService extends Service {
                     deviceAudioManager.registerAudioDeviceCallback(audioDeviceCallback, handler);
                 }
                 // Adopt an already-enabled system switch before applying the saved profile.
-                if (bluetoothAudioConnected && spatializer.isEnabled()) syncSpatialProfile();
+                if (SpatialAudioProfile.isEnabledForActiveBluetoothDevice(this)) syncSpatialProfile();
                 else applySpatialProfile();
             }
             // Initial synchronization after restoration and after every reconnection.
@@ -241,6 +248,9 @@ public final class DaxService extends Service {
                 return;
             }
             boolean enabled = spatializer.isEnabled();
+            // A speaker/wired route may be spatialized while an idle BT device is
+            // connected. That must not select the Bluetooth-only Dolby profile.
+            if (enabled && !SpatialAudioProfile.isEnabledForActiveBluetoothDevice(this)) return;
             int current = effect.getProfile();
             // Route loss (including a temporary call route) is not a user switch-off.
             if (!enabled && (!restoreOnDisable || !spatializer.isAvailable()
