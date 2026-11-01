@@ -12,3 +12,4 @@ allow hal_dms_default vendor_dolby_file:file create_file_perms;
 # Specific IPC requirements
 binder_call(hal_dms_default, hal_audio_default)
 binder_call(hal_dms_default, platform_app)
+binder_call(hal_dms_default, platform_app_36)
